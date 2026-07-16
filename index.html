@@ -1,0 +1,3187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GDP Project Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   GDP PROJECT TRACKER — Dark Theme Stylesheet
+   ============================================ */
+
+:root {
+  /* Core palette */
+  --bg:          #0a0c0e;
+  --bg-panel:    #0f1216;
+  --bg-card:     #141820;
+  --bg-card-hover:#1a2028;
+  --bg-input:    #0d1014;
+  --border:      #1e2530;
+  --border-focus:#00e5ff44;
+  --border-hover:#2a3545;
+
+  /* Accent colors */
+  --cyan:        #00e5ff;
+  --cyan-dim:    #00e5ff33;
+  --cyan-glow:   #00e5ff18;
+  --purple:      #6c5ce7;
+  --purple-dim:  #6c5ce733;
+  --lime:        #d7ef4b;
+  --lime-dim:    #d7ef4b33;
+  --gold:        #ffd93d;
+  --gold-dim:    #ffd93d33;
+  --red:         #ff7186;
+  --red-dim:     #ff718633;
+
+  /* Text */
+  --text:        #e8f4f8;
+  --text-dim:    #8899aa;
+  --text-muted:  #556677;
+  --text-dark:   #334455;
+
+  /* Status colors */
+  --status-lead:      #6c5ce7;
+  --status-progress:  #00e5ff;
+  --status-review:    #ffd93d;
+  --status-complete:  #d7ef4b;
+  --status-billed:    #4caf50;
+
+  /* Health colors */
+  --health-ontrack:   #d7ef4b;
+  --health-atrisk:    #ffd93d;
+  --health-waiting:   #ff7186;
+  --health-ready:     #00e5ff;
+
+  /* Spacing */
+  --sp-xs: 4px;
+  --sp-sm: 8px;
+  --sp-md: 16px;
+  --sp-lg: 24px;
+  --sp-xl: 32px;
+  --sp-2xl: 48px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Transitions */
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Font */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 14px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ============================================
+   HEADER
+   ============================================ */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel)f2 80%, transparent 100%);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: var(--sp-md) var(--sp-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-md);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+}
+
+.logo {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--cyan);
+  text-shadow: 0 0 20px var(--cyan-dim);
+}
+
+.logo span {
+  color: var(--text);
+  font-weight: 300;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+}
+
+.data-status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-xs);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.data-status .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: var(--transition);
+}
+
+.data-status .dot.live { background: var(--lime); box-shadow: 0 0 8px var(--lime-dim); }
+.data-status .dot.error { background: var(--red); box-shadow: 0 0 8px var(--red-dim); }
+.data-status .dot.demo { background: var(--gold); box-shadow: 0 0 8px var(--gold-dim); }
+
+.live-clock {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  min-width: 70px;
+  text-align: right;
+}
+
+.header-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: var(--sp-sm) var(--sp-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: var(--font-sans);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-xs);
+}
+
+.header-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: var(--cyan-glow);
+}
+
+.header-btn .badge {
+  background: var(--cyan);
+  color: var(--bg);
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 8px;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* ============================================
+   KPI STRIP
+   ============================================ */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--sp-md);
+  padding: var(--sp-lg);
+}
+
+.kpi-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-md) var(--sp-lg);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--cyan);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.kpi-card:hover::before { opacity: 1; }
+.kpi-card:hover { border-color: var(--border-hover); }
+
+.kpi-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: var(--sp-xs);
+}
+
+.kpi-value {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.kpi-value.cyan { color: var(--cyan); }
+.kpi-value.lime { color: var(--lime); }
+.kpi-value.gold { color: var(--gold); }
+.kpi-value.red { color: var(--red); }
+.kpi-value.purple { color: var(--purple); }
+
+.kpi-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: var(--sp-xs);
+  font-family: var(--font-mono);
+}
+
+/* ============================================
+   TAB NAV
+   ============================================ */
+.tab-nav {
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--sp-lg);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: var(--sp-md) var(--sp-lg);
+  font-size: 0.85rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.tab-btn:hover { color: var(--text-dim); }
+
+.tab-btn.active {
+  color: var(--cyan);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--cyan);
+  border-radius: 2px 2px 0 0;
+}
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+.tab-content {
+  display: none;
+  padding: var(--sp-lg);
+  animation: fadeIn 0.2s ease;
+}
+
+.tab-content.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   FILTER BAR
+   ============================================ */
+.filter-bar {
+  display: flex;
+  gap: var(--sp-sm);
+  margin-bottom: var(--sp-lg);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  gap: 2px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 2px;
+}
+
+.filter-chip {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: var(--sp-xs) var(--sp-md);
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.filter-chip:hover { color: var(--text-dim); }
+.filter-chip.active {
+  background: var(--cyan);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 180px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: var(--sp-sm) var(--sp-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.search-input::placeholder { color: var(--text-muted); }
+.search-input:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px var(--cyan-dim);
+}
+
+/* ============================================
+   PROJECT CARDS GRID
+   ============================================ */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--sp-md);
+}
+
+.project-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-lg);
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+
+.project-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+.project-card .card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--sp-sm);
+}
+
+.project-card .job-num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.project-card .owner-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1.5px solid;
+}
+
+.owner-jon {
+  background: var(--cyan-dim);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.owner-joy {
+  background: var(--purple-dim);
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+.project-card .card-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.project-card .card-client {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: var(--sp-md);
+}
+
+.card-badges {
+  display: flex;
+  gap: var(--sp-xs);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-md);
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-status {
+  background: var(--status-progress);
+  color: var(--bg);
+}
+
+.badge-health {
+  border: 1px solid;
+}
+
+.badge-health.on-track {
+  border-color: var(--health-ontrack);
+  color: var(--health-ontrack);
+  background: var(--lime-dim);
+}
+
+.badge-health.at-risk {
+  border-color: var(--health-atrisk);
+  color: var(--health-atrisk);
+  background: var(--gold-dim);
+}
+
+.badge-health.waiting {
+  border-color: var(--health-waiting);
+  color: var(--health-waiting);
+  background: var(--red-dim);
+}
+
+.badge-health.ready-to-bill {
+  border-color: var(--health-ready);
+  color: var(--health-ready);
+  background: var(--cyan-dim);
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.card-meta .timeline {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-xs);
+}
+
+.card-meta .due-date {
+  opacity: 0.7;
+}
+
+.card-actions {
+  display: flex;
+  gap: var(--sp-sm);
+  margin-top: var(--sp-md);
+  padding-top: var(--sp-md);
+  border-top: 1px solid var(--border);
+}
+
+.card-btn {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: var(--sp-xs) var(--sp-md);
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.card-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.card-btn.primary {
+  background: var(--cyan-dim);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.card-btn.primary:hover {
+  background: var(--cyan);
+  color: var(--bg);
+}
+
+/* ============================================
+   CLIENTS TABLE
+   ============================================ */
+.data-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.data-table th {
+  text-align: left;
+  padding: var(--sp-sm) var(--sp-md);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.data-table th:hover { color: var(--text-dim); }
+.data-table th .sort-arrow { margin-left: 4px; opacity: 0.4; }
+.data-table th.sorted .sort-arrow { opacity: 1; color: var(--cyan); }
+
+.data-table td {
+  padding: var(--sp-sm) var(--sp-md);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.data-table tr {
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.data-table tbody tr:hover {
+  background: var(--bg-card);
+}
+
+.data-table .client-name {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.data-table .amount {
+  font-family: var(--font-mono);
+}
+
+/* ============================================
+   TIME LOG
+   ============================================ */
+.time-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--sp-md);
+  margin-bottom: var(--sp-lg);
+}
+
+.time-summary-item {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-md);
+}
+
+.time-summary-item .person {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--sp-xs);
+}
+
+.time-summary-item .hours {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.time-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.time-entry {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px 50px 1fr;
+  gap: var(--sp-md);
+  align-items: center;
+  padding: var(--sp-sm) var(--sp-md);
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  font-size: 0.82rem;
+}
+
+.time-entry:hover { background: var(--bg-card-hover); }
+
+.time-entry .date {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.time-entry .desc {
+  color: var(--text);
+}
+
+.time-entry .person-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+.person-tag.jon {
+  background: var(--cyan-dim);
+  color: var(--cyan);
+}
+
+.person-tag.joy {
+  background: var(--purple-dim);
+  color: var(--purple);
+}
+
+.time-entry .hrs {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ============================================
+   INVOICES
+   ============================================ */
+.invoice-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-sm);
+}
+
+.invoice-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  gap: var(--sp-md);
+  align-items: center;
+  padding: var(--sp-md) var(--sp-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.invoice-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+}
+
+.invoice-card .inv-num {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.invoice-card .inv-client {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.invoice-card .inv-amount {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+.inv-status {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.inv-status.draft { background: var(--purple-dim); color: var(--purple); }
+.inv-status.sent { background: var(--cyan-dim); color: var(--cyan); }
+.inv-status.paid { background: var(--lime-dim); color: var(--lime); }
+.inv-status.overdue { background: var(--red-dim); color: var(--red); }
+
+.revenue-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--sp-md);
+  margin-bottom: var(--sp-lg);
+}
+
+/* ============================================
+   PIPELINE / KANBAN
+   ============================================ */
+.pipeline-board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--sp-md);
+  min-height: 60vh;
+}
+
+.pipeline-col {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-md);
+  display: flex;
+  flex-direction: column;
+}
+
+.pipeline-col .col-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-md);
+  padding-bottom: var(--sp-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+.pipeline-col .col-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.pipeline-col .col-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+.pipeline-cards {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-sm);
+}
+
+.pipeline-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-md);
+  cursor: grab;
+  transition: var(--transition);
+}
+
+.pipeline-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+}
+
+.pipeline-card.dragging {
+  opacity: 0.5;
+  border-color: var(--cyan);
+}
+
+.pipeline-card .pc-title {
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
+}
+
+.pipeline-card .pc-client {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: var(--sp-sm);
+}
+
+.pipeline-card .pc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-lg);
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: var(--sp-xs);
+  line-height: 1;
+  transition: var(--transition);
+}
+
+.modal-close:hover { color: var(--text); }
+
+.modal-body {
+  padding: var(--sp-lg);
+}
+
+.form-group {
+  margin-bottom: var(--sp-md);
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  margin-bottom: var(--sp-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: var(--sp-sm) var(--sp-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px var(--cyan-dim);
+}
+
+.form-select { appearance: none; cursor: pointer; }
+
+.form-textarea { min-height: 80px; resize: vertical; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-md);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-xs);
+  padding: var(--sp-sm) var(--sp-lg);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--cyan);
+  color: var(--bg);
+  border-color: var(--cyan);
+}
+
+.btn-primary:hover {
+  background: #33ebff;
+  box-shadow: 0 0 16px var(--cyan-dim);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-dim);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-sm);
+  padding: var(--sp-lg);
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================
+   DETAIL DRAWER (RIGHT SLIDE)
+   ============================================ */
+.drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 150;
+}
+
+.drawer-overlay.open { display: block; }
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 480px;
+  max-width: 100vw;
+  height: 100vh;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+  z-index: 151;
+  overflow-y: auto;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drawer.open { right: 0; }
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sp-lg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-panel);
+  z-index: 1;
+}
+
+.drawer-body { padding: var(--sp-lg); }
+
+.detail-section {
+  margin-bottom: var(--sp-xl);
+}
+
+.detail-section h3 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: var(--sp-sm);
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-sm);
+}
+
+.detail-field .field-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.detail-field .field-value {
+  font-size: 0.9rem;
+  color: var(--text);
+  font-family: var(--font-mono);
+}
+
+/* ============================================
+   FLOAT ACTION BUTTON
+   ============================================ */
+.fab {
+  position: fixed;
+  bottom: var(--sp-lg);
+  right: var(--sp-lg);
+  z-index: 90;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--cyan);
+  color: var(--bg);
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px var(--cyan-dim);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 28px var(--cyan-dim);
+}
+
+/* ============================================
+   SYNC QUEUE INDICATOR
+   ============================================ */
+.sync-queue-bar {
+  display: none;
+  position: fixed;
+  bottom: var(--sp-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-panel);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-sm) var(--sp-lg);
+  z-index: 90;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gold);
+  display: none;
+  align-items: center;
+  gap: var(--sp-sm);
+  box-shadow: 0 4px 20px var(--gold-dim);
+}
+
+.sync-queue-bar.visible {
+  display: flex;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+/* ============================================
+   CLIENT SECTIONS (Jira-style hierarchy)
+   ============================================ */
+.client-section {
+  margin-bottom: var(--sp-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-panel);
+}
+.client-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-md) var(--sp-lg);
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+  border-bottom: 1px solid transparent;
+}
+.client-header:hover { background: var(--bg-card-hover); }
+.client-section.expanded .client-header { border-bottom-color: var(--border); }
+.client-header .client-name { font-size: 1.05rem; font-weight: 600; color: var(--text); }
+.client-header .client-meta { display: flex; gap: var(--sp-md); align-items: center; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
+.client-header .client-meta .meta-count { background: var(--cyan-dim); color: var(--cyan); padding: 1px 7px; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+.client-header .expand-icon { color: var(--text-muted); font-size: 0.8rem; transition: transform 0.2s; }
+.client-section.expanded .client-header .expand-icon { transform: rotate(90deg); }
+.client-jobs { display: none; padding: 0 var(--sp-md) var(--sp-md); }
+.client-section.expanded .client-jobs { display: block; }
+
+/* Job rows */
+.job-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 100px 80px 80px 40px;
+  gap: var(--sp-sm);
+  align-items: center;
+  padding: var(--sp-sm) var(--sp-md);
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+  cursor: pointer;
+}
+.job-row:last-child { border-bottom: none; }
+.job-row:hover { background: var(--bg-card-hover); }
+.job-row .job-num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
+.job-row .job-info { min-width: 0; }
+.job-row .job-title { font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.job-row .job-desc { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.job-row .job-status { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; padding: 3px 10px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; text-align: center; }
+.job-row .job-timeline { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+.job-row .job-owner { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; }
+.job-row .job-actions { opacity: 0; transition: opacity 0.15s; display: flex; gap: 4px; }
+.job-row:hover .job-actions { opacity: 1; }
+.job-row .job-actions button { background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.68rem; cursor: pointer; transition: var(--transition); }
+.job-row .job-actions button:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* Status colors */
+.status-lead { background: var(--purple-dim); color: var(--purple); }
+.status-in-progress { background: var(--cyan-dim); color: var(--cyan); }
+.status-review { background: var(--gold-dim); color: var(--gold); }
+.status-complete { background: var(--lime-dim); color: var(--lime); }
+.status-billed { background: rgba(76,175,80,0.15); color: #4caf50; }
+
+/* Pipeline bar */
+.client-pipeline-bar { display: flex; gap: 2px; height: 3px; border-radius: 2px; overflow: hidden; margin-top: 6px; }
+.client-pipeline-bar .bar-segment { height: 100%; border-radius: 2px; transition: width 0.3s; }
+
+/* Job column header inside client section */
+.job-list-header {
+  display: grid;
+  grid-template-columns: 60px 1fr 100px 80px 80px 40px;
+  gap: var(--sp-sm);
+  padding: var(--sp-xs) var(--sp-md);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  border-bottom: 1px solid var(--border);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--sp-2xl) var(--sp-lg);
+  color: var(--text-muted);
+}
+
+.empty-state .icon {
+  font-size: 3rem;
+  margin-bottom: var(--sp-md);
+  opacity: 0.3;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+  margin-bottom: var(--sp-sm);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .app-header { padding: var(--sp-sm) var(--sp-md); }
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); padding: var(--sp-md); }
+  .projects-grid { grid-template-columns: 1fr; }
+  .job-row { grid-template-columns: 50px 1fr 70px 60px 30px; font-size: 0.82rem; }
+  .job-row .job-desc { display: none; }
+  .job-list-header { display: none; }
+  .client-header { flex-wrap: wrap; gap: var(--sp-xs); }
+  .client-header .client-meta { flex-wrap: wrap; }
+  .pipeline-board {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .pipeline-col { min-height: 200px; }
+  .filter-bar { flex-direction: column; }
+  .search-input { width: 100%; }
+  .time-entry {
+    grid-template-columns: 1fr;
+    gap: var(--sp-xs);
+  }
+  .invoice-card {
+    grid-template-columns: 1fr auto;
+    gap: var(--sp-sm);
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .drawer { width: 100vw; }
+  .logo { font-size: 1rem; }
+  .live-clock { display: none; }
+}
+
+@media (max-width: 480px) {
+  .kpi-strip { grid-template-columns: 1fr 1fr; }
+  .kpi-value { font-size: 1.2rem; }
+  .tab-nav { padding: 0 var(--sp-sm); }
+}
+
+/* ============================================
+   SETTINGS MODAL SPECIFIC
+   ============================================ */
+.settings-section {
+  margin-bottom: var(--sp-xl);
+}
+
+.settings-section h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: var(--sp-md);
+  color: var(--text);
+}
+
+.settings-section p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: var(--sp-sm);
+}
+
+.test-connection-btn {
+  margin-top: var(--sp-md);
+}
+
+.connection-status {
+  margin-top: var(--sp-sm);
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+}
+
+.connection-status.ok { color: var(--lime); }
+.connection-status.fail { color: var(--red); }
+.connection-status.pending { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     HEADER
+     ============================================ -->
+<header class="app-header">
+  <div class="header-left">
+    <div class="logo">GDP<span> Project Tracker</span></div>
+    <div class="data-status">
+      <div class="dot" id="dataDot"></div>
+      <span id="dataLabel">Loading…</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-clock" id="liveClock"></div>
+    <button class="header-btn" id="syncQueueBtn" style="display:none">
+      Sync Queue <span class="badge" id="syncQueueBadge">0</span>
+    </button>
+    <button class="header-btn" onclick="openSettings()">⚙ Settings</button>
+  </div>
+</header>
+
+<!-- ============================================
+     KPI STRIP
+     ============================================ -->
+<section class="kpi-strip" id="kpiStrip">
+  <div class="kpi-card">
+    <div class="kpi-label">Active Jobs</div>
+    <div class="kpi-value cyan" id="kpiActiveJobs">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Hours This Month</div>
+    <div class="kpi-value" id="kpiHoursMonth">—</div>
+    <div class="kpi-sub" id="kpiHoursSplit">Jon — | Joy —</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Revenue Ready to Bill</div>
+    <div class="kpi-value lime" id="kpiReadyBill">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Revenue Billed MTD</div>
+    <div class="kpi-value" id="kpiBilledMTD">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Overdue Invoices</div>
+    <div class="kpi-value red" id="kpiOverdue">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Avg Turnaround</div>
+    <div class="kpi-value purple" id="kpiAvgTurnaround">—</div>
+  </div>
+</section>
+
+<!-- ============================================
+     TAB NAVIGATION
+     ============================================ -->
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" data-tab="projects">Projects</button>
+  <button class="tab-btn" data-tab="clients">Clients</button>
+  <button class="tab-btn" data-tab="time">Time</button>
+  <button class="tab-btn" data-tab="invoices">Invoices</button>
+  <button class="tab-btn" data-tab="pipeline">Pipeline</button>
+</nav>
+
+<!-- ============================================
+     TAB CONTENT: PROJECTS
+     ============================================ -->
+<main>
+  <section class="tab-content active" id="tab-projects">
+    <div class="filter-bar">
+      <div class="filter-group" id="ownerFilter">
+        <button class="filter-chip active" data-val="all">All</button>
+        <button class="filter-chip" data-val="Jon">Jon</button>
+        <button class="filter-chip" data-val="Joy">Joy</button>
+      </div>
+      <div class="filter-group" id="statusFilter">
+        <button class="filter-chip active" data-val="all">All</button>
+        <button class="filter-chip" data-val="Lead">Lead</button>
+        <button class="filter-chip" data-val="In Progress">In Progress</button>
+        <button class="filter-chip" data-val="Review">Review</button>
+        <button class="filter-chip" data-val="Complete">Complete</button>
+        <button class="filter-chip" data-val="Billed">Billed</button>
+      </div>
+      <input class="search-input" type="text" placeholder="Search clients & projects…" id="projectSearch">
+    </div>
+    <div id="projectsList"></div>
+  </section>
+
+  <!-- ============================================
+       TAB CONTENT: CLIENTS
+       ============================================ -->
+  <section class="tab-content" id="tab-clients">
+    <div class="filter-bar">
+      <div class="filter-group" id="clientStatusFilter">
+        <button class="filter-chip active" data-val="all">All</button>
+        <button class="filter-chip" data-val="Active">Active</button>
+        <button class="filter-chip" data-val="Inactive">Inactive</button>
+        <button class="filter-chip" data-val="Archived">Archived</button>
+      </div>
+      <input class="search-input" type="text" placeholder="Search clients…" id="clientSearch">
+    </div>
+    <div class="data-table-wrap">
+      <table class="data-table" id="clientsTable">
+        <thead>
+          <tr>
+            <th data-sort="name">Client <span class="sort-arrow">↕</span></th>
+            <th data-sort="contact">Contact <span class="sort-arrow">↕</span></th>
+            <th data-sort="status">Status <span class="sort-arrow">↕</span></th>
+            <th data-sort="lastActivity">Last Activity <span class="sort-arrow">↕</span></th>
+            <th data-sort="outstanding">Outstanding <span class="sort-arrow">↕</span></th>
+            <th>Active Jobs</th>
+          </tr>
+        </thead>
+        <tbody id="clientsTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================================
+       TAB CONTENT: TIME
+       ============================================ -->
+  <section class="tab-content" id="tab-time">
+    <div class="time-summary-strip" id="timeSummary"></div>
+    <div class="filter-bar">
+      <div class="filter-group" id="timePersonFilter">
+        <button class="filter-chip active" data-val="all">All</button>
+        <button class="filter-chip" data-val="Jon">Jon</button>
+        <button class="filter-chip" data-val="Joy">Joy</button>
+      </div>
+      <input class="search-input" type="date" id="timeDateFrom" placeholder="From date">
+      <input class="search-input" type="date" id="timeDateTo" placeholder="To date">
+    </div>
+    <div class="time-entries" id="timeEntries"></div>
+  </section>
+
+  <!-- ============================================
+       TAB CONTENT: INVOICES
+       ============================================ -->
+  <section class="tab-content" id="tab-invoices">
+    <div class="revenue-strip" id="revenueStrip"></div>
+    <div class="filter-bar">
+      <div class="filter-group" id="invoiceStatusFilter">
+        <button class="filter-chip active" data-val="all">All</button>
+        <button class="filter-chip" data-val="Draft">Draft</button>
+        <button class="filter-chip" data-val="Sent">Sent</button>
+        <button class="filter-chip" data-val="Paid">Paid</button>
+        <button class="filter-chip" data-val="Overdue">Overdue</button>
+      </div>
+    </div>
+    <div class="invoice-list" id="invoiceList"></div>
+  </section>
+
+  <!-- ============================================
+       TAB CONTENT: PIPELINE
+       ============================================ -->
+  <section class="tab-content" id="tab-pipeline">
+    <div class="pipeline-board" id="pipelineBoard"></div>
+  </section>
+</main>
+
+<!-- ============================================
+     FLOAT ACTION BUTTON
+     ============================================ -->
+<button class="fab" id="fabBtn" onclick="openQuickAction()">＋</button>
+
+<!-- ============================================
+     SYNC QUEUE BAR
+     ============================================ -->
+<div class="sync-queue-bar" id="syncQueueBar">
+  <span id="syncQueueText">0 actions queued</span>
+  <button class="btn btn-primary" onclick="syncQueue()" style="padding:4px 12px;font-size:0.75rem;">Sync Now</button>
+</div>
+
+<!-- ============================================
+     MODALS
+     ============================================ -->
+
+<!-- Log Time Modal -->
+<div class="modal-overlay" id="logTimeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Log Time</div>
+      <button class="modal-close" onclick="closeModal('logTimeModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Person</label>
+        <select class="form-select" id="ltPerson">
+          <option value="Jon">Jon</option>
+          <option value="Joy">Joy</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Job #</label>
+        <select class="form-select" id="ltJob"></select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date</label>
+          <input class="form-input" type="date" id="ltDate">
+        </div>
+        <div class="form-group">
+          <label>Hours</label>
+          <input class="form-input" type="number" step="0.25" id="ltHours" min="0.25" value="1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Billable</label>
+        <select class="form-select" id="ltBillable">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-textarea" id="ltDesc" placeholder="What did you work on?"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('logTimeModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitLogTime()">Log Time</button>
+    </div>
+  </div>
+</div>
+
+<!-- New Job Modal -->
+<div class="modal-overlay" id="newJobModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">New Job</div>
+      <button class="modal-close" onclick="closeModal('newJobModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Client</label>
+          <select class="form-select" id="njClient"></select>
+        </div>
+        <div class="form-group">
+          <label>Owner</label>
+          <select class="form-select" id="njOwner">
+            <option value="Jon">Jon</option>
+            <option value="Joy">Joy</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Project Name</label>
+        <input class="form-input" type="text" id="njProject" placeholder="e.g. Website Redesign">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select class="form-select" id="njStatus">
+            <option value="Lead">Lead</option>
+            <option value="In Progress" selected>In Progress</option>
+            <option value="Review">Review</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Health</label>
+          <select class="form-select" id="njHealth">
+            <option value="On Track">On Track</option>
+            <option value="At Risk">At Risk</option>
+            <option value="Waiting">Waiting</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Date</label>
+          <input class="form-input" type="date" id="njStartDate">
+        </div>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input class="form-input" type="date" id="njDueDate">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Billable Amount</label>
+        <input class="form-input" type="number" step="0.01" id="njAmount" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea class="form-textarea" id="njNotes" placeholder="Any notes…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('newJobModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitNewJob()">Create Job</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bill It / Invoice Modal -->
+<div class="modal-overlay" id="billItModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Create Invoice</div>
+      <button class="modal-close" onclick="closeModal('billItModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Job #</label>
+        <select class="form-select" id="biJob"></select>
+      </div>
+      <div class="form-group">
+        <label>Client (auto-filled)</label>
+        <input class="form-input" type="text" id="biClient" readonly>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Invoice #</label>
+          <input class="form-input" type="text" id="biInvoiceNum" readonly>
+        </div>
+        <div class="form-group">
+          <label>Amount</label>
+          <input class="form-input" type="number" step="0.01" id="biAmount">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Hours</label>
+          <input class="form-input" type="number" step="0.25" id="biHours">
+        </div>
+        <div class="form-group">
+          <label>Rate</label>
+          <input class="form-input" type="number" step="0.01" id="biRate">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Issue Date</label>
+          <input class="form-input" type="date" id="biIssueDate">
+        </div>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input class="form-input" type="date" id="biDueDate">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-textarea" id="biDesc" placeholder="Invoice description…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('billItModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitInvoice()">Create Invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Action Modal -->
+<div class="modal-overlay" id="quickActionModal">
+  <div class="modal" style="max-width:320px">
+    <div class="modal-header">
+      <div class="modal-title">Quick Action</div>
+      <button class="modal-close" onclick="closeModal('quickActionModal')">&times;</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:12px;">
+      <button class="btn btn-primary" onclick="openLogTime()" style="width:100%">⏱ Log Time</button>
+      <button class="btn btn-secondary" onclick="openNewJob()" style="width:100%">📋 New Job</button>
+      <button class="btn btn-secondary" onclick="openBillIt()" style="width:100%">💰 Create Invoice</button>
+      <button class="btn btn-secondary" onclick="syncQueue()" style="width:100%">🔄 Sync Queue (<span id="qaQueueCount">0</span>)</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <div class="modal-title">⚙ Settings</div>
+      <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-section">
+        <h3>Google Sheets Connection</h3>
+        <p>Paste your Sheet ID and GIDs below to connect to live data. Leave blank to use demo data.</p>
+        <div class="form-group">
+          <label>Sheet ID</label>
+          <input class="form-input" type="text" id="cfgSheetId" placeholder="e.g. 1aBc...xYz">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Jobs GID</label>
+            <input class="form-input" type="text" id="cfgJobsGid" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Time Log GID</label>
+            <input class="form-input" type="text" id="cfgTimeGid" placeholder="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Invoices GID</label>
+            <input class="form-input" type="text" id="cfgInvoicesGid" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Clients GID</label>
+            <input class="form-input" type="text" id="cfgClientsGid" placeholder="0">
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Sync Endpoint</h3>
+        <p>Apps Script Web App URL for writing data back to the sheet.</p>
+        <div class="form-group">
+          <label>Sync Endpoint URL</label>
+          <input class="form-input" type="url" id="cfgSyncEndpoint" placeholder="https://script.google.com/...">
+        </div>
+        <div class="form-group">
+          <label>Sync Token</label>
+          <input class="form-input" type="text" id="cfgSyncToken" placeholder="Bearer token or API key">
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Defaults</h3>
+        <div class="form-group">
+          <label>Logged-in User</label>
+          <select class="form-select" id="cfgDefaultUser">
+            <option value="Jon">Jon</option>
+            <option value="Joy">Joy</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Next Job Number</label>
+          <input class="form-input" type="number" id="cfgNextJobNum" value="7804">
+        </div>
+      </div>
+      <div class="connection-status" id="connectionStatus"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="testConnection()">Test Connection</button>
+      <button class="btn btn-secondary" onclick="closeModal('settingsModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Save & Reload</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     DETAIL DRAWER
+     ============================================ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="detailDrawer">
+  <div class="drawer-header">
+    <div class="modal-title" id="drawerTitle">Details</div>
+    <button class="modal-close" onclick="closeDrawer()">&times;</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+// ============================================
+// CONFIGURATION — Edit these constants to connect
+// ============================================
+const CONFIG = {
+  SHEET_ID: '',
+  GIDS: {
+    jobs: '',
+    time: '',
+    invoices: '',
+    clients: ''
+  },
+  SYNC_ENDPOINT: '',
+  SYNC_TOKEN: '',
+  DEFAULT_USER: 'Jon',
+  NEXT_JOB_NUM: 7804
+};
+
+// ============================================
+// LOAD CONFIG FROM localStorage
+// ============================================
+function loadConfig() {
+  const saved = localStorage.getItem('gdp_config');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      Object.assign(CONFIG, parsed);
+    } catch(e) { /* ignore */ */
+    }
+  }
+}
+
+function saveConfig() {
+  localStorage.setItem('gdp_config', JSON.stringify(CONFIG));
+}
+
+// ============================================
+// DATA STORE
+// ============================================
+let STORE = {
+  jobs: [],
+  timeLog: [],
+  invoices: [],
+  clients: [],
+  dataMode: 'demo' // 'live', 'demo', 'error'
+};
+
+// ============================================
+// DEMO / FALLBACK DATA
+// ============================================
+const DEMO_DATA = {
+  clients: [
+    { Client: 'Acme Corp', 'Primary Contact': 'Sarah Chen', Email: 'sarah@acme.com', Phone: '(555) 123-4567', Rate: 175, 'Payment Terms': 'Net 30', Status: 'Active', Tags: 'enterprise, retainer', 'Last Activity': '2026-07-14', Outstanding: 4500 },
+    { Client: 'BlueSky Ventures', 'Primary Contact': 'Marcus Rivera', Email: 'marcus@bluesky.io', Phone: '(555) 234-5678', Rate: 150, 'Payment Terms': 'Net 15', Status: 'Active', Tags: 'startup', 'Last Activity': '2026-07-12', Outstanding: 2200 },
+    { Client: 'CloudNine Digital', 'Primary Contact': 'Aisha Patel', Email: 'aisha@cloudnine.co', Phone: '(555) 345-6789', Rate: 200, 'Payment Terms': 'Net 30', Status: 'Active', Tags: 'agency, premium', 'Last Activity': '2026-07-10', Outstanding: 8750 },
+    { Client: 'Driftwood Studios', 'Primary Contact': 'Leo Tanaka', Email: 'leo@driftwood.design', Phone: '(555) 456-7890', Rate: 125, 'Payment Terms': 'Net 15', Status: 'Inactive', Tags: 'design, small', 'Last Activity': '2026-05-20', Outstanding: 0 },
+    { Client: 'Evergreen Health', 'Primary Contact': 'Priya Sharma', Email: 'priya@evergreen.health', Phone: '(555) 567-8901', Rate: 185, 'Payment Terms': 'Net 45', Status: 'Active', Tags: 'healthcare, enterprise', 'Last Activity': '2026-07-15', Outstanding: 12000 },
+    { Client: 'Frost & Partners', 'Primary Contact': 'David Frost', Email: 'david@frostpartners.com', Phone: '(555) 678-9012', Rate: 225, 'Payment Terms': 'Net 30', Status: 'Active', Tags: 'legal, premium', 'Last Activity': '2026-07-13', Outstanding: 5600 },
+    { Client: 'GreenPath Energy', 'Primary Contact': 'Maya Johnson', Email: 'maya@greenpath.eco', Phone: '(555) 789-0123', Rate: 160, 'Payment Terms': 'Net 30', Status: 'Archived', Tags: 'cleantech', 'Last Activity': '2026-03-01', Outstanding: 0 }
+  ],
+  jobs: [
+    { 'Job #': '7804', Client: 'Acme Corp', Project: 'Platform Redesign', Owner: 'Jon', Status: 'In Progress', 'Start Date': '2026-06-15', 'Due Date': '2026-08-01', Health: 'On Track', 'Billable Amount': 18000, Notes: 'Phase 2 underway — design approved' },
+    { 'Job #': '7805', Client: 'BlueSky Ventures', Project: 'Mobile App MVP', Owner: 'Joy', Status: 'In Progress', 'Start Date': '2026-06-20', 'Due Date': '2026-07-30', Health: 'At Risk', 'Billable Amount': 12000, Notes: 'Scope creep — need to rein in features' },
+    { 'Job #': '7806', Client: 'CloudNine Digital', Project: 'Analytics Dashboard', Owner: 'Jon', Status: 'Review', 'Start Date': '2026-05-10', 'Due Date': '2026-07-20', Health: 'On Track', 'Billable Amount': 24000, Notes: 'Client reviewing final build' },
+    { 'Job #': '7807', Client: 'Evergreen Health', Project: 'Patient Portal', Owner: 'Joy', Status: 'In Progress', 'Start Date': '2026-07-01', 'Due Date': '2026-09-15', Health: 'On Track', 'Billable Amount': 35000, Notes: 'Kickoff complete — architecture phase' },
+    { 'Job #': '7808', Client: 'Frost & Partners', Project: 'Document Automation', Owner: 'Jon', Status: 'Lead', 'Start Date': '', 'Due Date': '', Health: 'Waiting', 'Billable Amount': 15000, Notes: 'SOW in review — expect signature this week' },
+    { 'Job #': '7809', Client: 'Acme Corp', Project: 'API Integration', Owner: 'Joy', Status: 'Complete', 'Start Date': '2026-04-01', 'Due Date': '2026-06-30', Health: 'Ready to Bill', 'Billable Amount': 8500, Notes: 'Delivered on time — invoice pending' },
+    { 'Job #': '7810', Client: 'CloudNine Digital', Project: 'Brand Refresh', Owner: 'Jon', Status: 'Billed', 'Start Date': '2026-03-15', 'Due Date': '2026-05-30', Health: 'On Track', 'Billable Amount': 9500, Notes: 'Paid — project complete' },
+    { 'Job #': '7811', Client: 'GreenPath Energy', Project: 'Website Redesign', Owner: 'Joy', Status: 'Complete', 'Start Date': '2026-01-10', 'Due Date': '2026-03-01', Health: 'Ready to Bill', 'Billable Amount': 6400, Notes: 'Old project — needs final billing' }
+  ],
+  timeLog: [
+    { Date: '2026-07-16', Client: 'Acme Corp', Project: 'Platform Redesign', Person: 'Jon', Hours: 3.5, Billable: 'Yes', Description: 'Component library build-out', 'Job #': '7804' },
+    { Date: '2026-07-16', Client: 'BlueSky Ventures', Project: 'Mobile App MVP', Person: 'Joy', Hours: 4, Billable: 'Yes', Description: 'API integration layer', 'Job #': '7805' },
+    { Date: '2026-07-15', Client: 'CloudNine Digital', Project: 'Analytics Dashboard', Person: 'Jon', Hours: 6, Billable: 'Yes', Description: 'Final QA pass & bug fixes', 'Job #': '7806' },
+    { Date: '2026-07-15', Client: 'Evergreen Health', Project: 'Patient Portal', Person: 'Joy', Hours: 5, Billable: 'Yes', Description: 'Architecture planning & data models', 'Job #': '7807' },
+    { Date: '2026-07-14', Client: 'Acme Corp', Project: 'Platform Redesign', Person: 'Jon', Hours: 7, Billable: 'Yes', Description: 'Design system implementation', 'Job #': '7804' },
+    { Date: '2026-07-14', Client: 'BlueSky Ventures', Project: 'Mobile App MVP', Person: 'Joy', Hours: 6.5, Billable: 'Yes', Description: 'User authentication flow', 'Job #': '7805' },
+    { Date: '2026-07-13', Client: 'CloudNine Digital', Project: 'Analytics Dashboard', Person: 'Jon', Hours: 4, Billable: 'Yes', Description: 'Chart component optimization', 'Job #': '7806' },
+    { Date: '2026-07-13', Client: 'Frost & Partners', Project: 'Document Automation', Person: 'Jon', Hours: 2, Billable: 'No', Description: 'SOW review meeting', 'Job #': '7808' },
+    { Date: '2026-07-12', Client: 'Acme Corp', Project: 'Platform Redesign', Person: 'Jon', Hours: 8, Billable: 'Yes', Description: 'Core layout & navigation', 'Job #': '7804' },
+    { Date: '2026-07-12', Client: 'Evergreen Health', Project: 'Patient Portal', Person: 'Joy', Hours: 3, Billable: 'Yes', Description: 'Kickoff meeting & requirements', 'Job #': '7807' },
+    { Date: '2026-07-11', Client: 'BlueSky Ventures', Project: 'Mobile App MVP', Person: 'Joy', Hours: 7, Billable: 'Yes', Description: 'State management refactor', 'Job #': '7805' },
+    { Date: '2026-07-10', Client: 'CloudNine Digital', Project: 'Analytics Dashboard', Person: 'Jon', Hours: 5, Billable: 'Yes', Description: 'Data pipeline integration', 'Job #': '7806' },
+    { Date: '2026-07-09', Client: 'Acme Corp', Project: 'API Integration', Person: 'Joy', Hours: 6, Billable: 'Yes', Description: 'Final testing & documentation', 'Job #': '7809' },
+    { Date: '2026-07-08', Client: 'Acme Corp', Project: 'API Integration', Person: 'Joy', Hours: 4, Billable: 'Yes', Description: 'Webhook handlers & error handling', 'Job #': '7809' }
+  ],
+  invoices: [
+    { 'Invoice #': 'INV-2401', Client: 'CloudNine Digital', 'Issue Date': '2026-07-01', 'Due Date': '2026-07-31', Hours: 40, Rate: 200, Amount: 8000, Status: 'Sent', 'Paid Date': '', Description: 'Analytics Dashboard — Phase 1' },
+    { 'Invoice #': 'INV-2402', Client: 'Acme Corp', 'Issue Date': '2026-07-05', 'Due Date': '2026-08-04', Hours: 28, Rate: 175, Amount: 4900, Status: 'Sent', 'Paid Date': '', Description: 'Platform Redesign — Sprint 1' },
+    { 'Invoice #': 'INV-2398', Client: 'CloudNine Digital', 'Issue Date': '2026-05-15', 'Due Date': '2026-06-14', Hours: 48, Rate: 200, Amount: 9600, Status: 'Paid', 'Paid Date': '2026-06-10', Description: 'Brand Refresh — Final' },
+    { 'Invoice #': 'INV-2395', Client: 'BlueSky Ventures', 'Issue Date': '2026-06-01', 'Due Date': '2026-06-16', Hours: 20, Rate: 150, Amount: 3000, Status: 'Overdue', 'Paid Date': '', Description: 'Mobile App — Design Phase' },
+    { 'Invoice #': 'INV-2396', Client: 'Frost & Partners', 'Issue Date': '2026-06-15', 'Due Date': '2026-07-15', Hours: 32, Rate: 225, Amount: 7200, Status: 'Draft', 'Paid Date': '', Description: 'Document Automation — Scoping' },
+    { 'Invoice #': 'INV-2397', Client: 'Acme Corp', 'Issue Date': '2026-06-20', 'Due Date': '2026-07-20', Hours: 16, Rate: 175, Amount: 2800, Status: 'Sent', 'Paid Date': '', Description: 'API Integration — Phase 2' }
+  ]
+};
+
+// ============================================
+// CSV PARSER
+// ============================================
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+
+  const headers = parseCSVLine(lines[0]).map(h => h.trim());
+
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const values = parseCSVLine(lines[i]);
+    const row = {};
+    headers.forEach((h, j) => {
+      row[h] = (values[j] || '').trim();
+    });
+    rows.push(row);
+  }
+  return rows;
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (ch === ',' && !inQuotes) {
+      result.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current);
+  return result;
+}
+
+// ============================================
+// DATA FETCHING
+// ============================================
+async function fetchSheetData(gid) {
+  if (!CONFIG.SHEET_ID || !gid) return null;
+  const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/export?format=csv&gid=${gid}`;
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    return parseCSV(text);
+  } catch (e) {
+    console.error('Fetch error:', e);
+    return null;
+  }
+}
+
+async function loadAllData() {
+  updateDataStatus('loading', 'Loading…');
+
+  let anyLive = false;
+  let anyError = false;
+
+  // Jobs
+  const jobsData = await fetchSheetData(CONFIG.GIDS.jobs);
+  if (jobsData !== null) {
+    STORE.jobs = jobsData;
+    anyLive = true;
+  } else if (CONFIG.SHEET_ID && CONFIG.GIDS.jobs) {
+    anyError = true;
+  }
+
+  // Time Log
+  const timeData = await fetchSheetData(CONFIG.GIDS.time);
+  if (timeData !== null) {
+    STORE.timeLog = timeData;
+    anyLive = true;
+  } else if (CONFIG.SHEET_ID && CONFIG.GIDS.time) {
+    anyError = true;
+  }
+
+  // Invoices
+  const invData = await fetchSheetData(CONFIG.GIDS.invoices);
+  if (invData !== null) {
+    STORE.invoices = invData;
+    anyLive = true;
+  } else if (CONFIG.SHEET_ID && CONFIG.GIDS.invoices) {
+    anyError = true;
+  }
+
+  // Clients
+  const clientData = await fetchSheetData(CONFIG.GIDS.clients);
+  if (clientData !== null) {
+    STORE.clients = clientData;
+    anyLive = true;
+  } else if (CONFIG.SHEET_ID && CONFIG.GIDS.clients) {
+    anyError = true;
+  }
+
+  // Fallback to demo data if nothing loaded
+  if (!anyLive) {
+    STORE.jobs = [...DEMO_DATA.jobs];
+    STORE.timeLog = [...DEMO_DATA.timeLog];
+    STORE.invoices = [...DEMO_DATA.invoices];
+    STORE.clients = [...DEMO_DATA.clients];
+    STORE.dataMode = anyError ? 'error' : 'demo';
+  } else {
+    // Fill in any missing tabs from demo
+    if (!STORE.jobs.length && CONFIG.GIDS.jobs) STORE.jobs = [...DEMO_DATA.jobs];
+    if (!STORE.timeLog.length && CONFIG.GIDS.time) STORE.timeLog = [...DEMO_DATA.timeLog];
+    if (!STORE.invoices.length && CONFIG.GIDS.invoices) STORE.invoices = [...DEMO_DATA.invoices];
+    if (!STORE.clients.length && CONFIG.GIDS.clients) STORE.clients = [...DEMO_DATA.clients];
+    STORE.dataMode = 'live';
+  }
+
+  updateDataStatus(STORE.dataMode, STORE.dataMode === 'live' ? 'Live' : STORE.dataMode === 'error' ? 'Error' : 'Demo Data');
+  renderAll();
+}
+
+function updateDataStatus(mode, label) {
+  const dot = document.getElementById('dataDot');
+  const lbl = document.getElementById('dataLabel');
+  dot.className = 'dot ' + (mode === 'live' ? 'live' : mode === 'error' ? 'error' : 'demo');
+  lbl.textContent = label;
+}
+
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+function fmt$(n) {
+  const num = parseFloat(n) || 0;
+  return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const date = new Date(d + 'T00:00:00');
+  if (isNaN(date)) return d;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function daysUntil(d) {
+  if (!d) return null;
+  const target = new Date(d + 'T00:00:00');
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  return Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+}
+
+function timelineLabel(d) {
+  const days = daysUntil(d);
+  if (days === null) return '';
+  if (days < 0) return `${Math.abs(days)}d overdue`;
+  if (days === 0) return 'Due today';
+  if (days === 1) return '1 day left';
+  return `${days}d left`;
+}
+
+function timelineColor(d) {
+  const days = daysUntil(d);
+  if (days === null) return 'var(--text-muted)';
+  if (days < 0) return 'var(--red)';
+  if (days <= 3) return 'var(--gold)';
+  if (days <= 7) return 'var(--cyan)';
+  return 'var(--text-dim)';
+}
+
+function statusColor(status) {
+  const s = (status || '').toLowerCase();
+  if (s === 'lead') return 'var(--status-lead)';
+  if (s === 'in progress') return 'var(--status-progress)';
+  if (s === 'review') return 'var(--status-review)';
+  if (s === 'complete') return 'var(--status-complete)';
+  if (s === 'billed') return 'var(--status-billed)';
+  return 'var(--text-muted)';
+}
+
+function healthClass(h) {
+  const v = (h || '').toLowerCase();
+  if (v === 'on track') return 'on-track';
+  if (v === 'at risk') return 'at-risk';
+  if (v === 'waiting') return 'waiting';
+  if (v === 'ready to bill') return 'ready-to-bill';
+  return 'on-track';
+}
+
+function isActiveJob(job) {
+  const s = (job.Status || '').toLowerCase();
+  return s !== 'billed' && s !== 'archived';
+}
+
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function thisMonth() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+// ============================================
+// ACTION QUEUE (localStorage persistence)
+// ============================================
+function getQueue() {
+  try {
+    return JSON.parse(localStorage.getItem('gdp_action_queue') || '[]');
+  } catch { return []; }
+}
+
+function setQueue(q) {
+  localStorage.setItem('gdp_action_queue', JSON.stringify(q));
+  updateSyncUI();
+}
+
+function queueAction(type, payload) {
+  const q = getQueue();
+  q.push({ type, payload, timestamp: Date.now() });
+  setQueue(q);
+}
+
+function updateSyncUI() {
+  const q = getQueue();
+  const badge = document.getElementById('syncQueueBadge');
+  const bar = document.getElementById('syncQueueBar');
+  const qaCount = document.getElementById('qaQueueCount');
+
+  if (badge) badge.textContent = q.length;
+  if (qaCount) qaCount.textContent = q.length;
+
+  const btn = document.getElementById('syncQueueBtn');
+  if (btn) btn.style.display = q.length > 0 ? '' : 'none';
+
+  if (bar) {
+    if (q.length > 0) {
+      bar.classList.add('visible');
+      document.getElementById('syncQueueText').textContent = `${q.length} action${q.length > 1 ? 's' : ''} queued`;
+    } else {
+      bar.classList.remove('visible');
+    }
+  }
+}
+
+async function syncQueue() {
+  const q = getQueue();
+  if (q.length === 0) {
+    alert('No actions to sync.');
+    return;
+  }
+
+  if (!CONFIG.SYNC_ENDPOINT) {
+    alert('No sync endpoint configured. Go to Settings to add your Apps Script URL.');
+    return;
+  }
+
+  try {
+    const resp = await fetch(CONFIG.SYNC_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': CONFIG.SYNC_TOKEN ? `Bearer ${CONFIG.SYNC_TOKEN}` : ''
+      },
+      body: JSON.stringify({ actions: q })
+    });
+
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
+    setQueue([]);
+    alert('All actions synced successfully!');
+  } catch (e) {
+    console.error('Sync failed:', e);
+    alert('Sync failed: ' + e.message);
+  }
+}
+
+// ============================================
+// RENDER: KPI STRIP
+// ============================================
+function renderKPIs() {
+  const activeJobs = STORE.jobs.filter(j => isActiveJob(j)).length;
+
+  const thisMonthStr = thisMonth();
+  const jonHours = STORE.timeLog
+    .filter(t => t.Person === 'Jon' && (t.Date || '').startsWith(thisMonthStr))
+    .reduce((sum, t) => sum + (parseFloat(t.Hours) || 0), 0);
+  const joyHours = STORE.timeLog
+    .filter(t => t.Person === 'Joy' && (t.Date || '').startsWith(thisMonthStr))
+    .reduce((sum, t) => sum + (parseFloat(t.Hours) || 0), 0);
+
+  const readyToBill = STORE.jobs
+    .filter(j => (j.Health || '').toLowerCase() === 'ready to bill')
+    .reduce((sum, j) => sum + (parseFloat(j['Billable Amount']) || 0), 0);
+
+  const now = new Date();
+  const billedMTD = STORE.invoices
+    .filter(i => {
+      const issueDate = i['Issue Date'] || '';
+      return issueDate.startsWith(thisMonthStr);
+    })
+    .reduce((sum, i) => sum + (parseFloat(i.Amount) || 0), 0);
+
+  const overdue = STORE.invoices.filter(i => (i.Status || '').toLowerCase() === 'overdue').length;
+
+  // Average turnaround: for completed jobs, avg days from start to due
+  const completedJobs = STORE.jobs.filter(j => {
+    const s = (j.Status || '').toLowerCase();
+    return s === 'complete' || s === 'billed';
+  });
+  let avgTurnaround = '—';
+  if (completedJobs.length) {
+    const totalDays = completedJobs.reduce((sum, j) => {
+      if (!j['Start Date'] || !j['Due Date']) return sum;
+      const start = new Date(j['Start Date'] + 'T00:00:00');
+      const due = new Date(j['Due Date'] + 'T00:00:00');
+      return sum + Math.max(0, Math.ceil((due - start) / (1000*60*60*24)));
+    }, 0);
+    avgTurnaround = Math.round(totalDays / completedJobs.length) + 'd';
+  }
+
+  document.getElementById('kpiActiveJobs').textContent = activeJobs;
+  document.getElementById('kpiHoursMonth').textContent = (jonHours + joyHours).toFixed(1) + 'h';
+  document.getElementById('kpiHoursSplit').textContent = `Jon ${jonHours.toFixed(1)}h | Joy ${joyHours.toFixed(1)}h`;
+  document.getElementById('kpiReadyBill').textContent = fmt$(readyToBill);
+  document.getElementById('kpiBilledMTD').textContent = fmt$(billedMTD);
+  document.getElementById('kpiOverdue').textContent = overdue;
+  document.getElementById('kpiAvgTurnaround').textContent = avgTurnaround;
+}
+
+// ============================================
+// RENDER: PROJECTS TAB (Jira-style: Client → Jobs)
+// ============================================
+let projectFilters = { owner: 'all', status: 'all', search: '' };
+
+function statusClass(status) {
+  const s = (status || '').toLowerCase();
+  if (s === 'lead') return 'status-lead';
+  if (s === 'in progress') return 'status-in-progress';
+  if (s === 'review') return 'status-review';
+  if (s === 'complete') return 'status-complete';
+  if (s === 'billed') return 'status-billed';
+  return 'status-lead';
+}
+
+function renderProjects() {
+  const container = document.getElementById('projectsList');
+  let jobs = [...STORE.jobs];
+
+  // Apply filters
+  if (projectFilters.owner !== 'all') {
+    jobs = jobs.filter(j => j.Owner === projectFilters.owner);
+  }
+  if (projectFilters.status !== 'all') {
+    jobs = jobs.filter(j => j.Status === projectFilters.status);
+  }
+  if (projectFilters.search) {
+    const q = projectFilters.search.toLowerCase();
+    jobs = jobs.filter(j =>
+      (j.Project || '').toLowerCase().includes(q) ||
+      (j.Client || '').toLowerCase().includes(q) ||
+      (j['Job #'] || '').toLowerCase().includes(q) ||
+      (j.Notes || '').toLowerCase().includes(q)
+    );
+  }
+
+  if (jobs.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">📋</div>
+        <p>No projects match your filters</p>
+      </div>`;
+    return;
+  }
+
+  // Group jobs by client
+  const clientMap = {};
+  jobs.forEach(j => {
+    const client = j.Client || 'No Client';
+    if (!clientMap[client]) clientMap[client] = [];
+    clientMap[client].push(j);
+  });
+
+  // Sort clients: Active first, then by name
+  const sortedClients = Object.keys(clientMap).sort((a, b) => {
+    // "No Client" goes last
+    if (a === 'No Client') return 1;
+    if (b === 'No Client') return -1;
+    // Active clients first
+    const aClient = STORE.clients.find(c => c.Client === a);
+    const bClient = STORE.clients.find(c => c.Client === b);
+    const aActive = aClient && aClient.Status === 'Active' ? 0 : 1;
+    const bActive = bClient && bClient.Status === 'Active' ? 0 : 1;
+    if (aActive !== bActive) return aActive - bActive;
+    return a.localeCompare(b);
+  });
+
+  container.innerHTML = sortedClients.map(clientName => {
+    const clientJobs = clientMap[clientName];
+    const clientInfo = STORE.clients.find(c => c.Client === clientName);
+    const activeCount = clientJobs.filter(j => isActiveJob(j)).length;
+    const totalHrs = clientJobs.reduce((sum, j) => {
+      return sum + STORE.timeLog.filter(t => t['Job #'] === j['Job #'] && t.Billable === 'Yes').reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+    }, 0);
+
+    // Pipeline bar segments
+    const statusCounts = { Lead: 0, 'In Progress': 0, Review: 0, Complete: 0, Billed: 0 };
+    clientJobs.forEach(j => { const s = j.Status || 'Lead'; statusCounts[s] = (statusCounts[s] || 0) + 1; });
+    const total = clientJobs.length || 1;
+    const barHtml = Object.entries(statusCounts).map(([status, count]) => {
+      if (!count) return '';
+      const pct = (count / total * 100).toFixed(1);
+      return `<div class="bar-segment" style="width:${pct}%;background:${statusColor(status)}"></div>`;
+    }).join('');
+
+    const jobsHtml = clientJobs.map(j => {
+      const ownerClass = j.Owner === 'Jon' ? 'owner-jon' : 'owner-joy';
+      const tl = timelineLabel(j['Due Date']);
+      const tc = timelineColor(j['Due Date']);
+      const sc = statusClass(j.Status);
+      const desc = j.Notes || j.Project || '';
+
+      return `
+        <div class="job-row" onclick="openProjectDetail('${escAttr(j['Job #'])}')">
+          <div class="job-num">#${j['Job #']}</div>
+          <div class="job-info">
+            <div class="job-title">${escHtml(j.Project || 'Untitled')}</div>
+            <div class="job-desc">${escHtml(desc.length > 60 ? desc.slice(0, 60) + '…' : desc)}</div>
+          </div>
+          <div class="job-status ${sc}">${escHtml(j.Status || 'Lead')}</div>
+          <div class="job-timeline" style="color:${tc}">${tl ? '⏱ ' + tl : fmtDate(j['Due Date'] || '—')}</div>
+          <div class="job-owner ${ownerClass}">${(j.Owner || '?')[0]}</div>
+          <div class="job-actions">
+            <button onclick="event.stopPropagation();openLogTimeForJob('${escAttr(j['Job #'])}')" title="Log time">⏱</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="client-section expanded">
+        <div class="client-header" onclick="this.parentElement.classList.toggle('expanded')">
+          <div>
+            <div class="client-name">${escHtml(clientName)}</div>
+            <div class="client-pipeline-bar">${barHtml}</div>
+          </div>
+          <div class="client-meta">
+            <span class="meta-count">${activeCount} active</span>
+            ${totalHrs > 0 ? `<span>${totalHrs.toFixed(1)}h</span>` : ''}
+            ${clientInfo && clientInfo.Outstanding ? `<span style="color:var(--gold)">${fmt$(clientInfo.Outstanding)}</span>` : ''}
+            <span class="expand-icon">▶</span>
+          </div>
+        </div>
+        <div class="client-jobs">
+          <div class="job-list-header">
+            <span>#</span><span>Project</span><span>Status</span><span>Timeline</span><span>Owner</span><span></span>
+          </div>
+          ${jobsHtml}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+// ============================================
+// RENDER: CLIENTS TAB
+// ============================================
+let clientFilters = { status: 'all', search: '' };
+let clientSort = { field: 'name', dir: 1 };
+
+function renderClients() {
+  let clients = [...STORE.clients];
+
+  if (clientFilters.status !== 'all') {
+    clients = clients.filter(c => c.Status === clientFilters.status);
+  }
+  if (clientFilters.search) {
+    const q = clientFilters.search.toLowerCase();
+    clients = clients.filter(c =>
+      (c.Client || '').toLowerCase().includes(q) ||
+      (c['Primary Contact'] || '').toLowerCase().includes(q)
+    );
+  }
+
+  // Sort
+  clients.sort((a, b) => {
+    let va, vb;
+    switch (clientSort.field) {
+      case 'name': va = (a.Client || '').toLowerCase(); vb = (b.Client || '').toLowerCase(); break;
+      case 'contact': va = (a['Primary Contact'] || '').toLowerCase(); vb = (b['Primary Contact'] || '').toLowerCase(); break;
+      case 'status': va = (a.Status || '').toLowerCase(); vb = (b.Status || '').toLowerCase(); break;
+      case 'lastActivity': va = a['Last Activity'] || ''; vb = b['Last Activity'] || ''; break;
+      case 'outstanding': va = parseFloat(a.Outstanding) || 0; vb = parseFloat(b.Outstanding) || 0; break;
+      default: va = (a.Client || '').toLowerCase(); vb = (b.Client || '').toLowerCase();
+    }
+    if (va < vb) return -1 * clientSort.dir;
+    if (va > vb) return 1 * clientSort.dir;
+    return 0;
+  });
+
+  const tbody = document.getElementById('clientsTableBody');
+
+  if (clients.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px">No clients found</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = clients.map(c => {
+    const activeJobs = STORE.jobs.filter(j => j.Client === c.Client && isActiveJob(j)).length;
+    const statusColors = { Active: 'var(--lime)', Inactive: 'var(--gold)', Archived: 'var(--text-muted)' };
+    const sc = statusColors[c.Status] || 'var(--text-muted)';
+
+    return `<tr onclick="openClientDetail('${escAttr(c.Client)}')">
+      <td class="client-name">${escHtml(c.Client)}</td>
+      <td>${escHtml(c['Primary Contact'] || '—')}</td>
+      <td><span style="color:${sc}">${escHtml(c.Status || '—')}</span></td>
+      <td style="font-family:var(--font-mono);font-size:0.8rem">${fmtDate(c['Last Activity'])}</td>
+      <td class="amount" style="font-family:var(--font-mono)">${fmt$(c.Outstanding)}</td>
+      <td style="font-family:var(--font-mono)">${activeJobs}</td>
+    </tr>`;
+  }).join('');
+}
+
+function escAttr(s) {
+  return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// ============================================
+// RENDER: TIME TAB
+// ============================================
+let timeFilters = { person: 'all', dateFrom: '', dateTo: '' };
+
+function renderTime() {
+  // Summary strip
+  const thisMonthStr = thisMonth();
+  const jonEntries = STORE.timeLog.filter(t => t.Person === 'Jon' && (t.Date || '').startsWith(thisMonthStr));
+  const joyEntries = STORE.timeLog.filter(t => t.Person === 'Joy' && (t.Date || '').startsWith(thisMonthStr));
+  const jonHrs = jonEntries.reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+  const joyHrs = joyEntries.reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+  const jonBillable = jonEntries.filter(t => t.Billable === 'Yes').reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+  const joyBillable = joyEntries.filter(t => t.Billable === 'Yes').reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+
+  document.getElementById('timeSummary').innerHTML = `
+    <div class="time-summary-item">
+      <div class="person" style="color:var(--cyan)">Jon — This Month</div>
+      <div class="hours" style="color:var(--cyan)">${jonHrs.toFixed(1)}h</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono)">${jonBillable.toFixed(1)}h billable</div>
+    </div>
+    <div class="time-summary-item">
+      <div class="person" style="color:var(--purple)">Joy — This Month</div>
+      <div class="hours" style="color:var(--purple)">${joyHrs.toFixed(1)}h</div>
+      <div style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono)">${joyBillable.toFixed(1)}h billable</div>
+    </div>
+    <div class="time-summary-item">
+      <div class="person">Total This Month</div>
+      <div class="hours">${(jonHrs + joyHrs).toFixed(1)}h</div>
+    </div>
+    <div class="time-summary-item">
+      <div class="person">Total Billable</div>
+      <div class="hours" style="color:var(--lime)">${(jonBillable + joyBillable).toFixed(1)}h</div>
+    </div>
+  `;
+
+  // Filter entries
+  let entries = [...STORE.timeLog];
+  if (timeFilters.person !== 'all') {
+    entries = entries.filter(t => t.Person === timeFilters.person);
+  }
+  if (timeFilters.dateFrom) {
+    entries = entries.filter(t => (t.Date || '') >= timeFilters.dateFrom);
+  }
+  if (timeFilters.dateTo) {
+    entries = entries.filter(t => (t.Date || '') <= timeFilters.dateTo);
+  }
+
+  // Sort by date desc
+  entries.sort((a, b) => (b.Date || '').localeCompare(a.Date || ''));
+
+  const container = document.getElementById('timeEntries');
+  if (entries.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">⏱</div><p>No time entries found</p></div>`;
+    return;
+  }
+
+  container.innerHTML = entries.map(t => {
+    const personClass = t.Person === 'Jon' ? 'jon' : 'joy';
+    return `
+      <div class="time-entry">
+        <span class="date">${fmtDate(t.Date)}</span>
+        <span class="desc">${escHtml(t.Description || t.Project || '—')}</span>
+        <span class="person-tag ${personClass}">${t.Person}</span>
+        <span class="hrs">${parseFloat(t.Hours || 0).toFixed(1)}h</span>
+        <span style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono)">${t.Billable === 'Yes' ? '💰' : '🔒'} #${t['Job #'] || '—'}</span>
+      </div>`;
+  }).join('');
+}
+
+// ============================================
+// RENDER: INVOICES TAB
+// ============================================
+let invoiceFilters = { status: 'all' };
+
+function renderInvoices() {
+  // Revenue strip
+  const totalBilled = STORE.invoices.reduce((s, i) => s + (parseFloat(i.Amount) || 0), 0);
+  const totalPaid = STORE.invoices.filter(i => (i.Status || '').toLowerCase() === 'paid').reduce((s, i) => s + (parseFloat(i.Amount) || 0), 0);
+  const totalOverdue = STORE.invoices.filter(i => (i.Status || '').toLowerCase() === 'overdue').reduce((s, i) => s + (parseFloat(i.Amount) || 0), 0);
+  const totalDraft = STORE.invoices.filter(i => (i.Status || '').toLowerCase() === 'draft').reduce((s, i) => s + (parseFloat(i.Amount) || 0), 0);
+
+  document.getElementById('revenueStrip').innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Total Billed</div>
+      <div class="kpi-value">${fmt$(totalBilled)}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Paid</div>
+      <div class="kpi-value lime">${fmt$(totalPaid)}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Overdue</div>
+      <div class="kpi-value red">${fmt$(totalOverdue)}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Draft</div>
+      <div class="kpi-value" style="color:var(--purple)">${fmt$(totalDraft)}</div>
+    </div>
+  `;
+
+  let invoices = [...STORE.invoices];
+  if (invoiceFilters.status !== 'all') {
+    invoices = invoices.filter(i => i.Status === invoiceFilters.status);
+  }
+
+  // Sort by issue date desc
+  invoices.sort((a, b) => (b['Issue Date'] || '').localeCompare(a['Issue Date'] || ''));
+
+  const container = document.getElementById('invoiceList');
+  if (invoices.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">📄</div><p>No invoices found</p></div>`;
+    return;
+  }
+
+  container.innerHTML = invoices.map(i => {
+    const sc = (i.Status || '').toLowerCase();
+    return `
+      <div class="invoice-card" onclick="openInvoiceDetail('${escAttr(i['Invoice #'])}')">
+        <div class="inv-num">${escHtml(i['Invoice #'] || '—')}</div>
+        <div>
+          <div class="inv-client">${escHtml(i.Client || '—')}</div>
+          <div style="font-size:0.72rem;color:var(--text-muted)">${escHtml(i.Description || '—')}</div>
+        </div>
+        <span class="inv-status ${sc}">${escHtml(i.Status || '—')}</span>
+        <div style="text-align:right">
+          <div class="inv-amount">${fmt$(i.Amount)}</div>
+          <div style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono)">Due ${fmtDate(i['Due Date'])}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ============================================
+// RENDER: PIPELINE TAB
+// ============================================
+const PIPELINE_STAGES = ['Lead', 'In Progress', 'Review', 'Complete', 'Billed'];
+const PIPELINE_COLORS = {
+  'Lead': 'var(--status-lead)',
+  'In Progress': 'var(--status-progress)',
+  'Review': 'var(--status-review)',
+  'Complete': 'var(--status-complete)',
+  'Billed': 'var(--status-billed)'
+};
+
+function renderPipeline() {
+  const board = document.getElementById('pipelineBoard');
+
+  board.innerHTML = PIPELINE_STAGES.map(stage => {
+    const cards = STORE.jobs.filter(j => j.Status === stage);
+    return `
+      <div class="pipeline-col"
+           ondragover="event.preventDefault();this.style.borderColor='var(--cyan)'"
+           ondragleave="this.style.borderColor=''"
+           ondrop="handlePipelineDrop(event, '${stage}');this.style.borderColor=''">
+        <div class="col-header">
+          <span class="col-title" style="color:${PIPELINE_COLORS[stage]}">${stage}</span>
+          <span class="col-count">${cards.length}</span>
+        </div>
+        <div class="pipeline-cards">
+          ${cards.map(j => `
+            <div class="pipeline-card" draggable="true"
+                 ondragstart="event.dataTransfer.setData('text/plain','${j['Job #']}')"
+                 onclick="openProjectDetail('${j['Job #']}')">
+              <div class="pc-title">${escHtml(j.Project || 'Untitled')}</div>
+              <div class="pc-client">${escHtml(j.Client || '—')} · #${j['Job #']}</div>
+              <div class="pc-footer">
+                <span class="owner-avatar ${j.Owner === 'Jon' ? 'owner-jon' : 'owner-joy'}" style="width:20px;height:20px;font-size:0.55rem;display:inline-flex">${(j.Owner || '?')[0]}</span>
+                <span style="color:${timelineColor(j['Due Date'])}">${timelineLabel(j['Due Date']) || '—'}</span>
+              </div>
+            </div>
+          `).join('')}
+          ${cards.length === 0 ? '<div style="text-align:center;color:var(--text-dark);padding:24px;font-size:0.8rem">Drop cards here</div>' : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function handlePipelineDrop(event, newStatus) {
+  event.preventDefault();
+  const jobNum = event.dataTransfer.getData('text/plain');
+  const job = STORE.jobs.find(j => j['Job #'] === jobNum);
+  if (job && job.Status !== newStatus) {
+    queueAction('updateJob', { 'Job #': jobNum, field: 'Status', value: newStatus });
+    job.Status = newStatus;
+    renderAll();
+  }
+}
+
+// ============================================
+// DRAWER: PROJECT DETAIL
+// ============================================
+function openProjectDetail(jobNum) {
+  const job = STORE.jobs.find(j => j['Job #'] === jobNum);
+  if (!job) return;
+
+  document.getElementById('drawerTitle').textContent = `#${job['Job #']} — ${job.Project || 'Untitled'}`;
+
+  const timeEntries = STORE.timeLog.filter(t => t['Job #'] === jobNum);
+  const totalHours = timeEntries.reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+
+  const client = STORE.clients.find(c => c.Client === job.Client);
+  const clientInfo = client ? `${client['Primary Contact'] || ''} · ${client.Email || ''}` : '';
+
+  document.getElementById('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <h3>Overview</h3>
+      <div class="detail-grid">
+        <div class="detail-field"><div class="field-label">Client</div><div class="field-value">${escHtml(job.Client || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Owner</div><div class="field-value">${escHtml(job.Owner || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Status</div><div class="field-value" style="color:${statusColor(job.Status)}">${escHtml(job.Status || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Health</div><div class="field-value">${escHtml(job.Health || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Start</div><div class="field-value">${fmtDate(job['Start Date'])}</div></div>
+        <div class="detail-field"><div class="field-label">Due</div><div class="field-value" style="color:${timelineColor(job['Due Date'])}">${fmtDate(job['Due Date'])} ${timelineLabel(job['Due Date'])}</div></div>
+        <div class="detail-field"><div class="field-label">Billable</div><div class="field-value" style="color:var(--lime)">${fmt$(job['Billable Amount'])}</div></div>
+        <div class="detail-field"><div class="field-label">Hours Logged</div><div class="field-value">${totalHours.toFixed(1)}h</div></div>
+      </div>
+      ${job.Notes ? `<div style="margin-top:12px;font-size:0.85rem;color:var(--text-dim);padding:12px;background:var(--bg-card);border-radius:8px;border:1px solid var(--border)">${escHtml(job.Notes)}</div>` : ''}
+      ${clientInfo ? `<div style="margin-top:8px;font-size:0.75rem;color:var(--text-muted)">👤 ${escHtml(clientInfo)}</div>` : ''}
+    </div>
+    <div class="detail-section">
+      <h3>Time Log (${timeEntries.length} entries)</h3>
+      ${timeEntries.length === 0 ? '<div style="color:var(--text-muted);font-size:0.85rem">No time logged yet</div>' :
+        timeEntries.sort((a,b) => (b.Date||'').localeCompare(a.Date||'')).map(t => `
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+            <div>
+              <span class="person-tag ${t.Person === 'Jon' ? 'jon' : 'joy'}" style="font-size:0.6rem">${t.Person}</span>
+              <span style="margin-left:8px">${escHtml(t.Description || '—')}</span>
+            </div>
+            <div style="font-family:var(--font-mono);color:var(--text-dim)">${parseFloat(t.Hours||0).toFixed(1)}h · ${fmtDate(t.Date)}</div>
+          </div>
+        `).join('')}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;">
+      <button class="btn btn-primary" onclick="closeDrawer();openLogTimeForJob('${jobNum}')">⏱ Log Time</button>
+      ${(job.Health || '').toLowerCase() === 'ready to bill' ? `<button class="btn btn-secondary" onclick="closeDrawer();openBillItForJob('${jobNum}')">💰 Bill It</button>` : ''}
+    </div>
+  `;
+
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('detailDrawer').classList.add('open');
+}
+
+// ============================================
+// DRAWER: CLIENT DETAIL
+// ============================================
+function openClientDetail(clientName) {
+  const client = STORE.clients.find(c => c.Client === clientName);
+  if (!client) return;
+
+  document.getElementById('drawerTitle').textContent = client.Client;
+
+  const clientJobs = STORE.jobs.filter(j => j.Client === clientName);
+  const clientInvoices = STORE.invoices.filter(i => i.Client === clientName);
+  const clientTime = STORE.timeLog.filter(t => t.Client === clientName);
+  const totalHours = clientTime.reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+  const billableHours = clientTime.filter(t => t.Billable === 'Yes').reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+
+  document.getElementById('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <h3>Contact</h3>
+      <div class="detail-grid">
+        <div class="detail-field"><div class="field-label">Primary Contact</div><div class="field-value">${escHtml(client['Primary Contact'] || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Email</div><div class="field-value">${escHtml(client.Email || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Phone</div><div class="field-value">${escHtml(client.Phone || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Rate</div><div class="field-value">${fmt$(client.Rate)}/hr</div></div>
+        <div class="detail-field"><div class="field-label">Payment Terms</div><div class="field-value">${escHtml(client['Payment Terms'] || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Status</div><div class="field-value">${escHtml(client.Status || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Outstanding</div><div class="field-value" style="color:var(--gold)">${fmt$(client.Outstanding)}</div></div>
+        <div class="detail-field"><div class="field-label">Tags</div><div class="field-value">${escHtml(client.Tags || '—')}</div></div>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h3>Jobs (${clientJobs.length})</h3>
+      ${clientJobs.length === 0 ? '<div style="color:var(--text-muted);font-size:0.85rem">No jobs</div>' :
+        clientJobs.map(j => `
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;cursor:pointer" onclick="openProjectDetail('${j['Job #']}')">
+            <div>
+              <span style="color:${statusColor(j.Status)}">${escHtml(j.Status)}</span>
+              <span style="margin-left:8px">${escHtml(j.Project)}</span>
+            </div>
+            <div style="font-family:var(--font-mono);color:var(--text-dim)">#${j['Job #']} · ${fmt$(j['Billable Amount'])}</div>
+          </div>
+        `).join('')}
+    </div>
+    <div class="detail-section">
+      <h3>Hours: ${totalHours.toFixed(1)}h total · ${billableHours.toFixed(1)}h billable</h3>
+    </div>
+    <div class="detail-section">
+      <h3>Invoices (${clientInvoices.length})</h3>
+      ${clientInvoices.length === 0 ? '<div style="color:var(--text-muted);font-size:0.85rem">No invoices</div>' :
+        clientInvoices.map(i => `
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem">
+            <div>
+              <span class="inv-status ${(i.Status||'').toLowerCase()}" style="font-size:0.6rem">${escHtml(i.Status)}</span>
+              <span style="margin-left:8px">${escHtml(i['Invoice #'])}</span>
+            </div>
+            <div style="font-family:var(--font-mono)">${fmt$(i.Amount)}</div>
+          </div>
+        `).join('')}
+    </div>
+  `;
+
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('detailDrawer').classList.add('open');
+}
+
+// ============================================
+// DRAWER: INVOICE DETAIL
+// ============================================
+function openInvoiceDetail(invNum) {
+  const inv = STORE.invoices.find(i => i['Invoice #'] === invNum);
+  if (!inv) return;
+
+  document.getElementById('drawerTitle').textContent = inv['Invoice #'];
+
+  document.getElementById('drawerBody').innerHTML = `
+    <div class="detail-section">
+      <h3>Invoice Details</h3>
+      <div class="detail-grid">
+        <div class="detail-field"><div class="field-label">Client</div><div class="field-value">${escHtml(inv.Client || '—')}</div></div>
+        <div class="detail-field"><div class="field-label">Status</div><div class="field-value"><span class="inv-status ${(inv.Status||'').toLowerCase()}">${escHtml(inv.Status || '—')}</span></div></div>
+        <div class="detail-field"><div class="field-label">Amount</div><div class="field-value" style="color:var(--lime)">${fmt$(inv.Amount)}</div></div>
+        <div class="detail-field"><div class="field-label">Hours × Rate</div><div class="field-value">${inv.Hours || '—'}h × ${fmt$(inv.Rate)}/hr</div></div>
+        <div class="detail-field"><div class="field-label">Issue Date</div><div class="field-value">${fmtDate(inv['Issue Date'])}</div></div>
+        <div class="detail-field"><div class="field-label">Due Date</div><div class="field-value">${fmtDate(inv['Due Date'])}</div></div>
+        ${inv['Paid Date'] ? `<div class="detail-field"><div class="field-label">Paid Date</div><div class="field-value">${fmtDate(inv['Paid Date'])}</div></div>` : ''}
+      </div>
+      ${inv.Description ? `<div style="margin-top:12px;font-size:0.85rem;color:var(--text-dim);padding:12px;background:var(--bg-card);border-radius:8px;border:1px solid var(--border)">${escHtml(inv.Description)}</div>` : ''}
+    </div>
+  `;
+
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('detailDrawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('detailDrawer').classList.remove('open');
+}
+
+// ============================================
+// MODALS
+// ============================================
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => {
+    if (e.target === el) el.classList.remove('open');
+  });
+});
+
+// Log Time
+function openLogTime() {
+  closeModal('quickActionModal');
+  document.getElementById('ltPerson').value = CONFIG.DEFAULT_USER;
+  document.getElementById('ltDate').value = today();
+  populateJobSelect('ltJob');
+  openModal('logTimeModal');
+}
+
+function openLogTimeForJob(jobNum) {
+  closeModal('quickActionModal');
+  document.getElementById('ltPerson').value = CONFIG.DEFAULT_USER;
+  document.getElementById('ltDate').value = today();
+  populateJobSelect('ltJob');
+  document.getElementById('ltJob').value = jobNum;
+  openModal('logTimeModal');
+}
+
+function submitLogTime() {
+  const entry = {
+    Date: document.getElementById('ltDate').value,
+    Client: '',
+    Project: '',
+    Person: document.getElementById('ltPerson').value,
+    Hours: document.getElementById('ltHours').value,
+    Billable: document.getElementById('ltBillable').value,
+    Description: document.getElementById('ltDesc').value,
+    'Job #': document.getElementById('ltJob').value
+  };
+
+  // Lookup client/project from job
+  const job = STORE.jobs.find(j => j['Job #'] === entry['Job #']);
+  if (job) {
+    entry.Client = job.Client;
+    entry.Project = job.Project;
+  }
+
+  if (!entry.Date || !entry['Job #'] || !entry.Hours) {
+    alert('Please fill in Date, Job #, and Hours.');
+    return;
+  }
+
+  // Add to local store
+  STORE.timeLog.unshift(entry);
+
+  // Queue for sync
+  queueAction('logTime', entry);
+
+  closeModal('logTimeModal');
+  renderAll();
+}
+
+// New Job
+function openNewJob() {
+  closeModal('quickActionModal');
+  document.getElementById('njStartDate').value = today();
+  populateClientSelect('njClient');
+  openModal('newJobModal');
+}
+
+function submitNewJob() {
+  const nextNum = parseInt(CONFIG.NEXT_JOB_NUM) || 7804;
+  const job = {
+    'Job #': String(nextNum),
+    Client: document.getElementById('njClient').value,
+    Project: document.getElementById('njProject').value,
+    Owner: document.getElementById('njOwner').value,
+    Status: document.getElementById('njStatus').value,
+    'Start Date': document.getElementById('njStartDate').value,
+    'Due Date': document.getElementById('njDueDate').value,
+    Health: document.getElementById('njHealth').value,
+    'Billable Amount': document.getElementById('njAmount').value || 0,
+    Notes: document.getElementById('njNotes').value
+  };
+
+  if (!job.Project) {
+    alert('Please enter a project name.');
+    return;
+  }
+
+  STORE.jobs.unshift(job);
+  CONFIG.NEXT_JOB_NUM = nextNum + 1;
+  saveConfig();
+
+  queueAction('newJob', job);
+
+  closeModal('newJobModal');
+  renderAll();
+}
+
+// Bill It / Create Invoice
+function openBillIt() {
+  closeModal('quickActionModal');
+  populateJobSelect('biJob');
+  // Default invoice number
+  const invCount = STORE.invoices.length;
+  document.getElementById('biInvoiceNum').value = `INV-${2403 + invCount + 1}`;
+  document.getElementById('biIssueDate').value = today();
+  // Default due date: 30 days from now
+  const due = new Date();
+  due.setDate(due.getDate() + 30);
+  document.getElementById('biDueDate').value = due.toISOString().split('T')[0];
+  openModal('billItModal');
+}
+
+function openBillItForJob(jobNum) {
+  closeModal('quickActionModal');
+  populateJobSelect('biJob');
+  document.getElementById('biJob').value = jobNum;
+  // Fill in job details
+  const job = STORE.jobs.find(j => j['Job #'] === jobNum);
+  if (job) {
+    document.getElementById('biClient').value = job.Client || '';
+    document.getElementById('biAmount').value = job['Billable Amount'] || '';
+    // Calculate hours from time log
+    const hours = STORE.timeLog.filter(t => t['Job #'] === jobNum && t.Billable === 'Yes').reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+    document.getElementById('biHours').value = hours || '';
+    // Lookup rate
+    const client = STORE.clients.find(c => c.Client === job.Client);
+    document.getElementById('biRate').value = client ? client.Rate : '';
+  }
+  const invCount = STORE.invoices.length;
+  document.getElementById('biInvoiceNum').value = `INV-${2403 + invCount + 1}`;
+  document.getElementById('biIssueDate').value = today();
+  const due = new Date();
+  due.setDate(due.getDate() + 30);
+  document.getElementById('biDueDate').value = due.toISOString().split('T')[0];
+  openModal('billItModal');
+}
+
+// Auto-fill client when job changes in Bill It modal
+document.getElementById('biJob')?.addEventListener('change', function() {
+  const job = STORE.jobs.find(j => j['Job #'] === this.value);
+  if (job) {
+    document.getElementById('biClient').value = job.Client || '';
+    document.getElementById('biAmount').value = job['Billable Amount'] || '';
+    const hours = STORE.timeLog.filter(t => t['Job #'] === this.value && t.Billable === 'Yes').reduce((s, t) => s + (parseFloat(t.Hours) || 0), 0);
+    document.getElementById('biHours').value = hours || '';
+    const client = STORE.clients.find(c => c.Client === job.Client);
+    document.getElementById('biRate').value = client ? client.Rate : '';
+  }
+});
+
+function submitInvoice() {
+  const invoice = {
+    'Invoice #': document.getElementById('biInvoiceNum').value,
+    Client: document.getElementById('biClient').value,
+    'Issue Date': document.getElementById('biIssueDate').value,
+    'Due Date': document.getElementById('biDueDate').value,
+    Hours: document.getElementById('biHours').value,
+    Rate: document.getElementById('biRate').value,
+    Amount: document.getElementById('biAmount').value,
+    Status: 'Draft',
+    'Paid Date': '',
+    Description: document.getElementById('biDesc').value
+  };
+
+  if (!invoice.Client || !invoice.Amount) {
+    alert('Please fill in Client and Amount.');
+    return;
+  }
+
+  STORE.invoices.unshift(invoice);
+  queueAction('newInvoice', invoice);
+
+  closeModal('billItModal');
+  renderAll();
+}
+
+// Quick Action
+function openQuickAction() {
+  document.getElementById('qaQueueCount').textContent = getQueue().length;
+  openModal('quickActionModal');
+}
+
+// Settings
+function openSettings() {
+  document.getElementById('cfgSheetId').value = CONFIG.SHEET_ID || '';
+  document.getElementById('cfgJobsGid').value = CONFIG.GIDS.jobs || '';
+  document.getElementById('cfgTimeGid').value = CONFIG.GIDS.time || '';
+  document.getElementById('cfgInvoicesGid').value = CONFIG.GIDS.invoices || '';
+  document.getElementById('cfgClientsGid').value = CONFIG.GIDS.clients || '';
+  document.getElementById('cfgSyncEndpoint').value = CONFIG.SYNC_ENDPOINT || '';
+  document.getElementById('cfgSyncToken').value = CONFIG.SYNC_TOKEN || '';
+  document.getElementById('cfgDefaultUser').value = CONFIG.DEFAULT_USER || 'Jon';
+  document.getElementById('cfgNextJobNum').value = CONFIG.NEXT_JOB_NUM || 7804;
+  document.getElementById('connectionStatus').textContent = '';
+  openModal('settingsModal');
+}
+
+function saveSettings() {
+  CONFIG.SHEET_ID = document.getElementById('cfgSheetId').value.trim();
+  CONFIG.GIDS.jobs = document.getElementById('cfgJobsGid').value.trim();
+  CONFIG.GIDS.time = document.getElementById('cfgTimeGid').value.trim();
+  CONFIG.GIDS.invoices = document.getElementById('cfgInvoicesGid').value.trim();
+  CONFIG.GIDS.clients = document.getElementById('cfgClientsGid').value.trim();
+  CONFIG.SYNC_ENDPOINT = document.getElementById('cfgSyncEndpoint').value.trim();
+  CONFIG.SYNC_TOKEN = document.getElementById('cfgSyncToken').value.trim();
+  CONFIG.DEFAULT_USER = document.getElementById('cfgDefaultUser').value;
+  CONFIG.NEXT_JOB_NUM = parseInt(document.getElementById('cfgNextJobNum').value) || 7804;
+  saveConfig();
+  closeModal('settingsModal');
+  loadAllData();
+}
+
+async function testConnection() {
+  const statusEl = document.getElementById('connectionStatus');
+  statusEl.textContent = 'Testing…';
+  statusEl.className = 'connection-status pending';
+
+  if (!CONFIG.SHEET_ID) {
+    statusEl.textContent = '⚠ No Sheet ID configured';
+    statusEl.className = 'connection-status fail';
+    return;
+  }
+
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/export?format=csv&gid=${CONFIG.GIDS.jobs || '0'}`;
+    const resp = await fetch(url);
+    if (resp.ok) {
+      const text = await resp.text();
+      statusEl.textContent = `✓ Connected — ${text.trim().split('\n').length} rows`;
+      statusEl.className = 'connection-status ok';
+    } else {
+      statusEl.textContent = `✗ HTTP ${resp.status} — check Sheet ID & permissions`;
+      statusEl.className = 'connection-status fail';
+    }
+  } catch (e) {
+    statusEl.textContent = `✗ Error: ${e.message}`;
+    statusEl.className = 'connection-status fail';
+  }
+}
+
+// ============================================
+// POPULATE SELECT DROPDOWNS
+// ============================================
+function populateJobSelect(selectId) {
+  const sel = document.getElementById(selectId);
+  sel.innerHTML = STORE.jobs
+    .filter(j => isActiveJob(j))
+    .map(j => `<option value="${j['Job #']}">#${j['Job #']} — ${escHtml(j.Project || 'Untitled')} (${escHtml(j.Client || '')})</option>`)
+    .join('');
+}
+
+function populateClientSelect(selectId) {
+  const sel = document.getElementById(selectId);
+  sel.innerHTML = STORE.clients
+    .filter(c => c.Status === 'Active')
+    .map(c => `<option value="${escAttr(c.Client)}">${escHtml(c.Client)}</option>`)
+    .join('');
+}
+
+// ============================================
+// RENDER ALL
+// ============================================
+function renderAll() {
+  renderKPIs();
+  renderProjects();
+  renderClients();
+  renderTime();
+  renderInvoices();
+  renderPipeline();
+  updateSyncUI();
+}
+
+// ============================================
+// TAB NAVIGATION
+// ============================================
+document.getElementById('tabNav').addEventListener('click', e => {
+  if (!e.target.classList.contains('tab-btn')) return;
+  const tab = e.target.dataset.tab;
+
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+});
+
+// ============================================
+// FILTER EVENT LISTENERS
+// ============================================
+
+// Projects: Owner filter
+document.getElementById('ownerFilter').addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-chip')) return;
+  document.querySelectorAll('#ownerFilter .filter-chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  projectFilters.owner = e.target.dataset.val;
+  renderProjects();
+});
+
+// Projects: Status filter
+document.getElementById('statusFilter').addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-chip')) return;
+  document.querySelectorAll('#statusFilter .filter-chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  projectFilters.status = e.target.dataset.val;
+  renderProjects();
+});
+
+// Projects: Search
+document.getElementById('projectSearch').addEventListener('input', e => {
+  projectFilters.search = e.target.value;
+  renderProjects();
+});
+
+// Clients: Status filter
+document.getElementById('clientStatusFilter').addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-chip')) return;
+  document.querySelectorAll('#clientStatusFilter .filter-chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  clientFilters.status = e.target.dataset.val;
+  renderClients();
+});
+
+// Clients: Search
+document.getElementById('clientSearch').addEventListener('input', e => {
+  clientFilters.search = e.target.value;
+  renderClients();
+});
+
+// Clients: Sort
+document.querySelector('#clientsTable thead')?.addEventListener('click', e => {
+  const th = e.target.closest('th');
+  if (!th || !th.dataset.sort) return;
+  const field = th.dataset.sort;
+  if (clientSort.field === field) {
+    clientSort.dir *= -1;
+  } else {
+    clientSort.field = field;
+    clientSort.dir = 1;
+  }
+  document.querySelectorAll('#clientsTable th').forEach(t => t.classList.remove('sorted'));
+  th.classList.add('sorted');
+  renderClients();
+});
+
+// Time: Person filter
+document.getElementById('timePersonFilter').addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-chip')) return;
+  document.querySelectorAll('#timePersonFilter .filter-chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  timeFilters.person = e.target.dataset.val;
+  renderTime();
+});
+
+// Time: Date filters
+document.getElementById('timeDateFrom').addEventListener('change', e => {
+  timeFilters.dateFrom = e.target.value;
+  renderTime();
+});
+document.getElementById('timeDateTo').addEventListener('change', e => {
+  timeFilters.dateTo = e.target.value;
+  renderTime();
+});
+
+// Invoices: Status filter
+document.getElementById('invoiceStatusFilter').addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-chip')) return;
+  document.querySelectorAll('#invoiceStatusFilter .filter-chip').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  invoiceFilters.status = e.target.dataset.val;
+  renderInvoices();
+});
+
+// ============================================
+// LIVE CLOCK
+// ============================================
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2, '0');
+  const m = now.getMinutes().toString().padStart(2, '0');
+  const s = now.getSeconds().toString().padStart(2, '0');
+  document.getElementById('liveClock').textContent = `${h}:${m}:${s}`;
+}
+
+// ============================================
+// KEYBOARD SHORTCUTS
+// ============================================
+document.addEventListener('keydown', e => {
+  // Escape closes modals and drawers
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+    closeDrawer();
+  }
+  // Ctrl+N: New Job
+  if (e.ctrlKey && e.key === 'n') {
+    e.preventDefault();
+    openNewJob();
+  }
+  // Ctrl+T: Log Time
+  if (e.ctrlKey && e.key === 't') {
+    e.preventDefault();
+    openLogTime();
+  }
+});
+
+// ============================================
+// AUTO-REFRESH (every 5 minutes)
+// ============================================
+function startAutoRefresh() {
+  setInterval(() => {
+    if (CONFIG.SHEET_ID) loadAllData();
+  }, 5 * 60 * 1000);
+}
+
+// ============================================
+// INIT
+// ============================================
+(function init() {
+  loadConfig();
+  loadAllData();
+  updateClock();
+  setInterval(updateClock, 1000);
+  startAutoRefresh();
+})();
+</script>
+
+</body>
+</html>
