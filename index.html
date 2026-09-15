@@ -109,7 +109,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel)f2 80%, transparent 100%);
+  background: linear-gradient(180deg, var(--bg-panel) 0%, color-mix(in srgb, var(--bg-panel) 95%, transparent) 80%, transparent 100%);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   padding: var(--sp-md) var(--sp-lg);
@@ -1820,8 +1820,7 @@ function loadConfig() {
     try {
       const parsed = JSON.parse(saved);
       Object.assign(CONFIG, parsed);
-    } catch(e) { /* ignore */ */
-    }
+    } catch(e) { /* ignore */ }
   }
 }
 
