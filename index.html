@@ -202,7 +202,7 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-::selection { background: var(--cyan); color: #fff; }
+::selection { background: var(--primary); color: var(--on-primary); }
 :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 2px; }
 
 /* ============================================
@@ -810,13 +810,13 @@ body {
 }
 
 .person-tag.jon {
-  background: var(--cyan-dim);
-  color: var(--cyan);
+  background: var(--fill-progress);
+  color: var(--owner-jon-text);
 }
 
 .person-tag.joy {
-  background: var(--purple-dim);
-  color: var(--purple);
+  background: var(--fill-complete);
+  color: var(--owner-joy-text);
 }
 
 .time-entry .hrs {
@@ -880,10 +880,10 @@ body {
   text-transform: uppercase;
 }
 
-.inv-status.draft { background: var(--purple-dim); color: var(--purple); }
-.inv-status.sent { background: var(--cyan-dim); color: var(--cyan); }
-.inv-status.paid { background: var(--lime-dim); color: var(--lime); }
-.inv-status.overdue { background: var(--red-dim); color: var(--red); }
+.inv-status.draft { background: var(--fill-lead); color: var(--invoice-draft); }
+.inv-status.sent { background: var(--fill-progress); color: var(--invoice-sent); }
+.inv-status.paid { background: var(--paper); color: var(--on-paper); }
+.inv-status.overdue { background: var(--invoice-overdue); color: var(--invoice-overdue-text); }
 
 .revenue-strip {
   display: grid;
@@ -965,7 +965,7 @@ body {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: var(--backdrop);
   backdrop-filter: blur(4px);
   z-index: 200;
   align-items: center;
@@ -1081,14 +1081,13 @@ body {
 }
 
 .btn-primary {
-  background: var(--cyan);
-  color: var(--bg);
-  border-color: var(--cyan);
+  background: var(--ember);
+  color: var(--on-primary);
+  border-color: var(--ember);
 }
 
 .btn-primary:hover {
-  background: #33ebff;
-  box-shadow: 0 0 16px var(--cyan-dim);
+  background: var(--rust);
 }
 
 .btn-secondary {
@@ -1117,7 +1116,8 @@ body {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: var(--backdrop);
+  backdrop-filter: blur(4px);
   z-index: 150;
 }
 
@@ -1297,11 +1297,11 @@ body {
 .job-row .job-actions button:hover { border-color: var(--cyan); color: var(--cyan); }
 
 /* Status colors */
-.status-lead { background: var(--purple-dim); color: var(--purple); }
-.status-in-progress { background: var(--cyan-dim); color: var(--cyan); }
-.status-review { background: var(--gold-dim); color: var(--gold); }
-.status-complete { background: var(--lime-dim); color: var(--lime); }
-.status-billed { background: rgba(76,175,80,0.15); color: #4caf50; }
+.status-lead { background: var(--fill-lead); color: var(--status-lead-text); }
+.status-in-progress { background: var(--fill-progress); color: var(--status-progress-text); }
+.status-review { background: var(--fill-review); color: var(--status-review-text); }
+.status-complete { background: var(--fill-complete); color: var(--status-complete-text); }
+.status-billed { background: var(--paper); color: var(--on-paper); }
 
 /* Pipeline bar */
 .client-pipeline-bar { display: flex; gap: 2px; height: 3px; border-radius: 2px; overflow: hidden; margin-top: 6px; }
@@ -2715,7 +2715,7 @@ function renderPipeline() {
 
 function boardColumnHtml(stage, jobs, laneClient) {
   const cards = jobs.filter(j => j.Status === stage);
-  const pre = (BOARD_VIEW.lane === 'client' && laneClient !== '—') ? `'${escJs(laneClient)}', ` : '';
+  const pre = (BOARD_VIEW.lane === 'client' && laneClient !== '—') ? `'${escJs(laneClient)}', ` : `'', `;
   return `
     <div class="pipeline-col">
       <div class="col-header">
