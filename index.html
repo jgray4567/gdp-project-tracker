@@ -19,32 +19,32 @@
      The ONLY place raw color values live.
      ============================================ */
 
-  /* — Ink ramp (canvas → panel → card → hover) — */
-  --surface:        #333333;
-  --surface-2:      #3D3D3D;
-  --surface-3:      #474747;
-  --surface-hover:  #525252;
+  /* — Paper ramp (light) (canvas → panel → card → hover) — */
+  --surface:        #F2F0EC;
+  --surface-2:      #F7F6F4;
+  --surface-3:      #FFFFFF;
+  --surface-hover:  #EDEAE4;
 
   /* — Hairlines (structure, not shadows) — */
-  --hairline:        rgba(242,240,236,0.14);
-  --hairline-subtle: rgba(242,240,236,0.07);
-  --hairline-strong: rgba(242,240,236,0.26);
+  --hairline:        rgba(51,51,51,0.14);
+  --hairline-subtle: rgba(51,51,51,0.07);
+  --hairline-strong: rgba(51,51,51,0.26);
 
-  /* — Bone ramp (type on ink) — */
-  --on-surface:       #F2F0EC;   /* bone 11.1:1 */
-  --on-surface-dim:   #A9A6A1;   /* bone-2 5.2:1 */
-  --on-surface-faint: #6E6C69;   /* bone-3 — DECORATIVE ONLY 2.4:1 */
+  /* — Ink ramp (type on paper) — */
+  --on-surface:       #333333;   /* ink 11.1:1 on bone */
+  --on-surface-dim:   #6E6C69;   /* bone-3 4.6:1 AA */
+  --on-surface-faint: #A9A6A1;   /* bone-2 DECORATIVE ONLY 2.3:1 */
 
   /* — Heat ramp (the only accent) — */
-  --primary:        #E86E34;    /* heat — dots, focus, display (4.1:1 non-text) */
+  --primary:        #E86E34;    /* heat accent on light - dots/bars/focus; text uses deep variants */
   --primary-deep:   #C4551F;
-  --primary-bright: #F49B6E;     /* heat-hi — small heat text (5.9:1 AA) */
+  --primary-bright:  #A64515;     /* heat-text variant for light (5.3:1 AA) */
   --ember:          #B24A19;     /* CTA fills, filled alert chips */
   --ember-deep:     #8A340D;
   --rust:           #7A2E0A;     /* deepest CTA hover */
   --on-primary:     #F2F0EC;     /* bone on ember/rust fills */
-  --focus-ring:     rgba(232,110,52,0.30);
-  --primary-glow:   rgba(232,110,52,0.09);
+  --focus-ring:     rgba(232,110,52,0.35);
+  --primary-glow:   rgba(232,110,52,0.12);
 
   /* — Neutrals & state hues — */
   --neutral:   #939598;         /* sun */
@@ -54,47 +54,47 @@
   --amber:     #F0A03C;         /* review / at-risk (5.9:1) */
 
   /* — Pipeline status arc (dot = hue, text = AA variant) — */
-  --status-lead:          #939598;
-  --status-lead-text:      #A9A6A1;
-  --status-progress:      #E86E34;
-  --status-progress-text: #F49B6E;
-  --status-review:        #F0A03C;
-  --status-review-text:   #F0A03C;
-  --status-complete:      #D0E1E9;
-  --status-complete-text: #D0E1E9;
-  --status-billed:        #F7F6F4;
-  --status-billed-text:   #333333;
+  --status-lead:          #6E6C69;
+  --status-lead-text:      #6E6C69;
+  --status-progress:      #C4551F;
+  --status-progress-text: #A64515;
+  --status-review:        #8A5212;
+  --status-review-text:   #8A5212;
+  --status-complete:      #3E6E80;
+  --status-complete-text: #3E6E80;
+  --status-billed:        #333333;
+  --status-billed-text:   #F7F6F4;
 
   /* — Job health — */
-  --health-on-track:      #D0E1E9;
-  --health-at-risk:       #F0A03C;
+  --health-on-track:      #3E6E80;
+  --health-at-risk:       #8A5212;
   --health-waiting:       #B24A19;
   --health-waiting-text:  #F2F0EC;
-  --health-ready-to-bill: #F7F6F4;
+  --health-ready-to-bill: #333333;
 
   /* — Invoice states — */
-  --invoice-draft:        #A9A6A1;
-  --invoice-sent:         #F49B6E;
-  --invoice-paid:         #F7F6F4;
+  --invoice-draft:        #6E6C69;
+  --invoice-sent:         #A64515;
+  --invoice-paid:         #333333;
   --invoice-overdue:      #B24A19;
   --invoice-overdue-text: #F2F0EC;
 
   /* — Owners — */
   --owner-jon:      #E86E34;
-  --owner-jon-text: #F49B6E;
-  --owner-joy:      #D0E1E9;
-  --owner-joy-text: #D0E1E9;
+  --owner-jon-text: #A64515;
+  --owner-joy:      #538494;
+  --owner-joy-text: #3E6E80;
 
   /* — Translucent status fills (chips on ink) — */
-  --fill-lead:     rgba(147,149,152,0.14);
+  --fill-lead:     rgba(147,149,152,0.18);
   --fill-progress: rgba(232,110,52,0.14);
-  --fill-review:   rgba(240,160,60,0.14);
-  --fill-complete: rgba(208,225,233,0.12);
-  --fill-paper:    rgba(247,246,244,0.20);
+  --fill-review:   rgba(240,160,60,0.18);
+  --fill-complete: rgba(208,225,233,0.35);
+  --fill-paper:    rgba(51,51,51,0.05);
   --fill-ember:    rgba(178,74,25,0.20);
 
   /* — Floating layers — */
-  --backdrop: rgba(51,51,51,0.92);
+  --backdrop: rgba(51,51,51,0.45);
 
   /* — GDP logo (sun + wordmark, as drawn) — */
   --logo-sun:  var(--neutral);
@@ -147,12 +147,12 @@
   --cyan:      var(--primary);
   --cyan-dim:  var(--fill-progress);
   --cyan-glow: var(--primary-glow);
-  --purple:    var(--neutral);
+  --purple:    var(--on-surface-dim);  /* visible gray on light */
   --purple-dim: var(--fill-lead);
-  --lime:      var(--sky);
+  --lime:      var(--status-complete);
   --lime-dim:  var(--fill-complete);
-  --gold:      var(--paper);
-  --gold-dim:  var(--fill-paper);
+  --gold:      #8A5212;  /* amber-deep gold for light */
+  --gold-dim: var(--fill-review);
   --red:       var(--ember);
   --red-dim:   var(--fill-ember);
 
@@ -882,7 +882,7 @@ body {
 
 .inv-status.draft { background: var(--fill-lead); color: var(--invoice-draft); }
 .inv-status.sent { background: var(--fill-progress); color: var(--invoice-sent); }
-.inv-status.paid { background: var(--paper); color: var(--on-paper); }
+.inv-status.paid { background: var(--invoice-paid); color: var(--paper); }
 .inv-status.overdue { background: var(--invoice-overdue); color: var(--invoice-overdue-text); }
 
 .revenue-strip {
@@ -950,7 +950,7 @@ body {
 .pc-move { position: absolute; top: 6px; right: 6px; border: none; background: none; cursor: pointer; color: var(--on-surface-faint); font: 700 0.8rem/1 var(--font-sans); padding: 4px 6px; border-radius: var(--r-sm); opacity: 0; transition: var(--transition); }
 .pipeline-card:hover .pc-move, .pipeline-card.open .pc-move { opacity: 1; }
 .pc-move:hover { color: var(--status-progress-text); background: var(--surface-hover); }
-.move-popover { display: none; position: absolute; top: 28px; right: 6px; z-index: 150; min-width: 140px; background: var(--surface-2); border: 1px solid var(--hairline-strong); border-radius: var(--r-lg); padding: 6px; box-shadow: 0 12px 32px rgba(0,0,0,0.45); }
+.move-popover { display: none; position: absolute; top: 28px; right: 6px; z-index: 150; min-width: 140px; background: var(--surface-2); border: 1px solid var(--hairline-strong); border-radius: var(--r-lg); padding: 6px; box-shadow: 0 12px 32px rgba(0,0,0,0.16); }
 .pipeline-card.open .move-popover { display: block; }
 .move-popover button { display: flex; align-items: center; gap: 8px; width: 100%; border: none; background: none; cursor: pointer; text-align: left; font: 800 0.68rem/1 var(--font-sans); letter-spacing: var(--label-spacing); text-transform: uppercase; color: var(--on-surface-dim); padding: 8px 10px; border-radius: var(--r-sm); }
 .move-popover button:hover { background: var(--surface-hover); color: var(--on-surface); }
@@ -1301,7 +1301,7 @@ body {
 .status-in-progress { background: var(--fill-progress); color: var(--status-progress-text); }
 .status-review { background: var(--fill-review); color: var(--status-review-text); }
 .status-complete { background: var(--fill-complete); color: var(--status-complete-text); }
-.status-billed { background: var(--paper); color: var(--on-paper); }
+.status-billed { background: var(--status-billed); color: var(--status-billed-text); }
 
 /* Pipeline bar */
 .client-pipeline-bar { display: flex; gap: 2px; height: 3px; border-radius: 2px; overflow: hidden; margin-top: 6px; }
