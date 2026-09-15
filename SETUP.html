@@ -115,7 +115,9 @@ Next Job Number	7804</pre>
 <script>
 document.querySelectorAll('.copy').forEach(function(b){
   b.addEventListener('click', function(){
-    var pre = b.parentElement.querySelector('pre');
+    var pre = b.nextElementSibling;
+    while (pre && pre.tagName !== 'PRE') { pre = pre.nextElementSibling; }
+    if (!pre) return;
     var text = pre.innerText;
     function done(){ b.textContent='Copied ✓'; setTimeout(function(){ b.textContent='Copy'; },1600); }
     function fallback(){
