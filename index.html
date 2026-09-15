@@ -6,79 +6,182 @@
 <title>GDP Project Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..1000;1,300..1000&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..1000;1,300..1000&display=swap" rel="stylesheet">
 <style>
 /* ============================================
    GDP PROJECT TRACKER — Dark Theme Stylesheet
    ============================================ */
 
 :root {
-  /* Core palette */
-  --bg:          #333333;
-  --bg-panel:    #3D3D3D;
-  --bg-card:     #474747;
-  --bg-card-hover:#525252;
-  --bg-input:    #3D3D3D;
-  --border:      rgba(242,240,236,.14);
-  --border-focus:rgba(232,110,52,.30);
-  --border-hover:rgba(242,240,236,.26);
+  /* ============================================
+     GDP TRACKER DESIGN TOKENS — alpha
+     Source of truth: docs/design.md
+     The ONLY place raw color values live.
+     ============================================ */
 
-  /* Accent colors */
-  --cyan:        #E86E34;
-  --cyan-dim:    rgba(232,110,52,.20);
-  --cyan-glow:   rgba(232,110,52,.09);
-  --purple:      #939598;
-  --purple-dim:  rgba(147,149,152,.20);
-  --lime:        #D0E1E9;
-  --lime-dim:    rgba(208,225,233,.20);
-  --gold:        #F7F6F4;
-  --gold-dim:    rgba(247,246,244,.20);
-  --red:         #B24A19;
-  --red-dim:     rgba(178,74,25,.20);
+  /* — Ink ramp (canvas → panel → card → hover) — */
+  --surface:        #333333;
+  --surface-2:      #3D3D3D;
+  --surface-3:      #474747;
+  --surface-hover:  #525252;
 
-  /* Text */
-  --text:        #F2F0EC;
-  --text-dim:    #A9A6A1;
-  --text-muted:  #6E6C69;
-  --text-dark:   #333333;
+  /* — Hairlines (structure, not shadows) — */
+  --hairline:        rgba(242,240,236,0.14);
+  --hairline-subtle: rgba(242,240,236,0.07);
+  --hairline-strong: rgba(242,240,236,0.26);
 
-  /* Status colors */
-  --status-lead:      #939598;
-  --status-progress:  #E86E34;
-  --status-review:    #D9A44A;
-  --status-complete:  #8FBF7F;
-  --status-billed:    #F7F6F4;
+  /* — Bone ramp (type on ink) — */
+  --on-surface:       #F2F0EC;   /* bone 11.1:1 */
+  --on-surface-dim:   #A9A6A1;   /* bone-2 5.2:1 */
+  --on-surface-faint: #6E6C69;   /* bone-3 — DECORATIVE ONLY 2.4:1 */
 
-  /* Health colors */
-  --health-ontrack:   #8FBF7F;
-  --health-atrisk:    #D9A44A;
-  --health-waiting:   #B24A19;
-  --health-ready:     #D0E1E9;
+  /* — Heat ramp (the only accent) — */
+  --primary:        #E86E34;    /* heat — dots, focus, display (4.1:1 non-text) */
+  --primary-deep:   #C4551F;
+  --primary-bright: #F49B6E;     /* heat-hi — small heat text (5.9:1 AA) */
+  --ember:          #B24A19;     /* CTA fills, filled alert chips */
+  --ember-deep:     #8A340D;
+  --rust:           #7A2E0A;     /* deepest CTA hover */
+  --on-primary:     #F2F0EC;     /* bone on ember/rust fills */
+  --focus-ring:     rgba(232,110,52,0.30);
+  --primary-glow:   rgba(232,110,52,0.09);
 
-  /* GDP logo (sun + wordmark, as drawn) */
-  --logo-sun:    #939598;
-  --logo-word:   #E86E34;
+  /* — Neutrals & state hues — */
+  --neutral:   #939598;         /* sun */
+  --sky:       #D0E1E9;         /* complete / settled-cool */
+  --paper:     #F7F6F4;         /* billed / filed */
+  --on-paper:  #333333;         /* ink on paper (11.7:1) */
+  --amber:     #F0A03C;         /* review / at-risk (5.9:1) */
 
-  /* Spacing */
-  --sp-xs: 4px;
-  --sp-sm: 8px;
-  --sp-md: 16px;
-  --sp-lg: 24px;
-  --sp-xl: 32px;
-  --sp-2xl: 48px;
+  /* — Pipeline status arc (dot = hue, text = AA variant) — */
+  --status-lead:          #939598;
+  --status-lead-text:      #A9A6A1;
+  --status-progress:      #E86E34;
+  --status-progress-text: #F49B6E;
+  --status-review:        #F0A03C;
+  --status-review-text:   #F0A03C;
+  --status-complete:      #D0E1E9;
+  --status-complete-text: #D0E1E9;
+  --status-billed:        #F7F6F4;
+  --status-billed-text:   #333333;
 
-  /* Radius */
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 6px;
-  --radius-xl: 8px;
+  /* — Job health — */
+  --health-on-track:      #D0E1E9;
+  --health-at-risk:       #F0A03C;
+  --health-waiting:       #B24A19;
+  --health-waiting-text:  #F2F0EC;
+  --health-ready-to-bill: #F7F6F4;
 
-  /* Transitions */
+  /* — Invoice states — */
+  --invoice-draft:        #A9A6A1;
+  --invoice-sent:         #F49B6E;
+  --invoice-paid:         #F7F6F4;
+  --invoice-overdue:      #B24A19;
+  --invoice-overdue-text: #F2F0EC;
+
+  /* — Owners — */
+  --owner-jon:      #E86E34;
+  --owner-jon-text: #F49B6E;
+  --owner-joy:      #D0E1E9;
+  --owner-joy-text: #D0E1E9;
+
+  /* — Translucent status fills (chips on ink) — */
+  --fill-lead:     rgba(147,149,152,0.14);
+  --fill-progress: rgba(232,110,52,0.14);
+  --fill-review:   rgba(240,160,60,0.14);
+  --fill-complete: rgba(208,225,233,0.12);
+  --fill-paper:    rgba(247,246,244,0.20);
+  --fill-ember:    rgba(178,74,25,0.20);
+
+  /* — Floating layers — */
+  --backdrop: rgba(51,51,51,0.92);
+
+  /* — GDP logo (sun + wordmark, as drawn) — */
+  --logo-sun:  var(--neutral);
+  --logo-word: var(--primary);
+
+  /* — Spacing ramp — */
+  --space-micro: 4px;
+  --space-xs:    8px;
+  --space-sm:    16px;
+  --space-md:    24px;
+  --space-lg:    40px;
+  --space-xl:    64px;
+  --gutter:      clamp(16px, 3vw, 32px);
+  --column-min:  240px;
+  --container-max: 1680px;
+
+  /* — Radii (structural 2–8px; pill is earned) — */
+  --r-sharp: 2px;
+  --r-sm:    3px;
+  --r-md:    4px;
+  --r-lg:    6px;
+  --r-xl:    8px;
+  --r-pill:  999px;
+
+  /* — Typography roles (Nunito only — mono dropped per design.md) — */
+  --font-sans: 'Nunito', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-label: 800 0.68rem/1 var(--font-sans);
+  --label-spacing: 0.12em;
+  --font-numeric: 700 0.95rem/1.2 var(--font-sans);
+
+  /* — Motion — */
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Font */
-  --font-sans: 'Nunito', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  /* ============================================
+     LEGACY ALIASES — old names mapped to tokens
+     so all existing CSS keeps rendering. New
+     code uses the semantic names above.
+     ============================================ */
+
+  --bg:            var(--surface);
+  --bg-panel:      var(--surface-2);
+  --bg-card:       var(--surface-3);
+  --bg-card-hover: var(--surface-hover);
+  --bg-input:      var(--surface-2);
+
+  --border:       var(--hairline);
+  --border-focus: var(--focus-ring);
+  --border-hover: var(--hairline-strong);
+
+  --cyan:      var(--primary);
+  --cyan-dim:  var(--fill-progress);
+  --cyan-glow: var(--primary-glow);
+  --purple:    var(--neutral);
+  --purple-dim: var(--fill-lead);
+  --lime:      var(--sky);
+  --lime-dim:  var(--fill-complete);
+  --gold:      var(--paper);
+  --gold-dim:  var(--fill-paper);
+  --red:       var(--ember);
+  --red-dim:   var(--fill-ember);
+
+  --text:       var(--on-surface);
+  --text-dim:   var(--on-surface-dim);
+  --text-muted: var(--on-surface-faint);
+  --text-dark:  var(--on-paper);
+
+  --health-ontrack: var(--health-on-track);
+  --health-atrisk:  var(--health-at-risk);
+  --health-waiting: var(--health-waiting);
+  --health-ready:   var(--health-ready-to-bill);
+
+  /* legacy spacing names (pre-redesign values kept) */
+  --sp-xs:  var(--space-micro);
+  --sp-sm:  var(--space-xs);
+  --sp-md:  var(--space-sm);
+  --sp-lg:  var(--space-md);
+  --sp-xl:  32px;
+  --sp-2xl: 48px;
+
+  /* legacy radii */
+  --radius-sm: var(--r-sharp);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+
+  /* mono retired — label role replaces it */
+  --font-mono: var(--font-sans);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
