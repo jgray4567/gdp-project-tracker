@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GDP Tracker Design System — Style Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..1000;1,300..1000&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   GDP TRACKER DESIGN SYSTEM — style guide mirror of docs/design.md
+   Every value below is a token from design.md, declared once in :root.
+   ============================================================ */
+:root {
+  /* canvas — ink ramp */
+  --surface: #333333;
+  --surface-2: #3D3D3D;
+  --surface-3: #474747;
+  --surface-hover: #525252;
+  /* hairlines */
+  --hairline: rgba(242,240,236,0.14);
+  --hairline-subtle: rgba(242,240,236,0.07);
+  --hairline-strong: rgba(242,240,236,0.26);
+  /* type on ink — bone ramp */
+  --on-surface: #F2F0EC;
+  --on-surface-dim: #A9A6A1;
+  --on-surface-faint: #6E6C69;
+  /* brand */
+  --primary: #E86E34;
+  --primary-deep: #C4551F;
+  --primary-bright: #F49B6E;
+  --ember: #B24A19;
+  --ember-deep: #8A340D;
+  --rust: #7A2E0A;
+  --neutral: #939598;
+  --sky: #D0E1E9;
+  --paper: #F7F6F4;
+  --amber: #F0A03C;
+  /* pipeline status */
+  --status-lead: #939598;
+  --status-lead-text: #A9A6A1;
+  --status-progress: #E86E34;
+  --status-progress-text: #F49B6E;
+  --status-review: #F0A03C;
+  --status-review-text: #F0A03C;
+  --status-complete: #D0E1E9;
+  --status-complete-text: #D0E1E9;
+  --status-billed: #F7F6F4;
+  --status-billed-text: #333333;
+  /* health */
+  --health-on-track: #D0E1E9;
+  --health-at-risk: #F0A03C;
+  --health-waiting: #B24A19;
+  --health-waiting-text: #F2F0EC;
+  --health-ready-to-bill: #F7F6F4;
+  /* invoice states */
+  --invoice-draft: #A9A6A1;
+  --invoice-sent: #F49B6E;
+  --invoice-paid: #F7F6F4;
+  --invoice-overdue: #B24A19;
+  --invoice-overdue-text: #F2F0EC;
+  /* owners */
+  --owner-jon: #E86E34;
+  --owner-jon-text: #F49B6E;
+  --owner-joy: #D0E1E9;
+  --owner-joy-text: #D0E1E9;
+  /* translucent fills */
+  --fill-lead: rgba(147,149,152,0.14);
+  --fill-progress: rgba(232,110,52,0.14);
+  --fill-review: rgba(240,160,60,0.14);
+  --fill-complete: rgba(208,225,233,0.12);
+  /* backdrop + shadows */
+  --backdrop: rgba(51,51,51,0.92);
+  --shadow-overlay: 0 30px 90px rgba(0,0,0,0.45);
+  --shadow-float: 0 16px 44px rgba(0,0,0,0.4);
+  /* radius */
+  --r-sharp: 2px; --r-sm: 3px; --r-md: 4px; --r-lg: 6px; --r-xl: 8px; --r-pill: 999px;
+  /* spacing */
+  --s-micro: 4px; --s-xs: 8px; --s-sm: 16px; --s-md: 24px; --s-lg: 40px; --s-xl: 64px;
+  /* type */
+  --font: 'Nunito', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /* motion */
+  --ease: cubic-bezier(0.16,1,0.3,1);
+  --t-ui: 0.22s;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--surface);
+  color: var(--on-surface);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--primary); color: var(--paper); }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: var(--r-sharp); }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 4px; }
+
+.wrap { max-width: 1180px; margin-inline: auto; padding-inline: clamp(16px, 4vw, 48px); }
+.label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.mono-val { font-variant-numeric: tabular-nums; font-weight: 700; }
+
+/* guide header */
+.ds-head { border-bottom: 1px solid var(--hairline); padding-block: var(--s-md) var(--s-sm); margin-bottom: var(--s-lg); }
+.ds-head h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+.ds-head h1 em { font-style: normal; color: var(--primary); }
+.ds-head p { color: var(--on-surface-dim); max-width: 62ch; margin-top: var(--s-xs); font-size: 0.92rem; }
+.ds-head .mirror-note { margin-top: var(--s-xs); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--neutral); }
+
+/* sections */
+.ds-sec { margin-bottom: var(--s-lg); }
+.ds-sec > h2 {
+  font-size: 0.78rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--on-surface-dim); padding-bottom: 10px; border-bottom: 1px solid var(--hairline);
+  margin-bottom: var(--s-sm); display: flex; align-items: baseline; gap: 10px;
+}
+.ds-sec > h2 .n { color: var(--primary); font-variant-numeric: tabular-nums; }
+.ds-sec .sec-note { color: var(--on-surface-dim); font-size: 0.85rem; max-width: 70ch; margin: -6px 0 var(--s-sm); }
+
+/* group label inside a section */
+.group-label { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--neutral); margin: var(--s-sm) 0 var(--s-xs); }
+
+/* swatch grid */
+.sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--s-xs); }
+.sw {
+  background: var(--surface-2); border: 1px solid var(--hairline); border-radius: var(--r-md);
+  overflow: hidden; transition: border-color var(--t-ui) var(--ease);
+}
+.sw:hover { border-color: var(--hairline-strong); }
+.sw .sw-block { height: 64px; display: flex; align-items: flex-end; padding: 8px 10px; }
+.sw .sw-block.hair-block { background: var(--surface); }
+.sw .sw-info { padding: 9px 10px 10px; border-top: 1px solid var(--hairline-subtle); }
+.sw .sw-info code { display: block; font-family: var(--font); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.04em; color: var(--on-surface); font-style: normal; }
+.sw .sw-info .hex { font-size: 0.72rem; font-weight: 700; color: var(--on-surface-dim); font-variant-numeric: tabular-nums; }
+.sw .sw-info .use { display: block; font-size: 0.72rem; color: var(--on-surface-dim); margin-top: 3px; line-height: 1.4; }
+.sw .sw-info .ratio { display: inline-block; margin-top: 5px; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: var(--r-pill); border: 1px solid var(--hairline); color: var(--on-surface-dim); }
+.sw .sw-info .ratio.pass { color: var(--sky); border-color: var(--sky); }
+.sw .sw-info .ratio.ui-only { color: var(--amber); border-color: var(--amber); }
+.sw .sw-info .ratio.no { color: var(--paper); border-color: transparent; background: var(--ember); }
+
+/* text specimen on ink */
+.txt-line { background: var(--surface); border: 1px dashed var(--hairline); border-radius: var(--r-sm); padding: 8px 12px; font-size: 0.85rem; }
+
+/* typography specimens */
+.type-row { display: grid; grid-template-columns: 190px 1fr; gap: var(--s-sm); align-items: baseline; padding: var(--s-xs) 0; border-bottom: 1px solid var(--hairline-subtle); }
+.type-meta { font-size: 0.68rem; color: var(--on-surface-dim); line-height: 1.6; }
+.type-meta code { color: var(--on-surface); font-weight: 800; }
+.type-meta .tnum { font-variant-numeric: tabular-nums; }
+.t-display-xl { font-size: clamp(2.1rem, 4.6vw, 4.6rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.04em; }
+.t-display { font-size: 1.6rem; font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; }
+.t-heading { font-size: 1.15rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+.t-body { font-size: 0.9rem; font-weight: 400; line-height: 1.55; }
+.t-body-strong { font-size: 0.9rem; font-weight: 600; line-height: 1.45; }
+.t-label { font-size: 0.68rem; font-weight: 800; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; }
+.t-caption { font-size: 0.78rem; font-weight: 500; line-height: 1.4; }
+.t-numeric { font-size: 0.95rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+
+/* spacing bars */
+.space-row { display: flex; align-items: center; gap: var(--s-sm); padding: 6px 0; }
+.space-row .space-bar { height: 14px; background: var(--primary); border-radius: var(--r-sharp); opacity: 0.85; }
+.space-row .space-name { font-size: 0.72rem; font-weight: 800; color: var(--on-surface); min-width: 82px; font-variant-numeric: tabular-nums; }
+.space-row .space-val { font-size: 0.72rem; color: var(--on-surface-dim); font-variant-numeric: tabular-nums; }
+
+/* radius boxes */
+.radius-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s-xs); }
+.radius-card { text-align: center; }
+.radius-card .r-box { height: 72px; background: var(--surface-3); border: 1px solid var(--hairline-strong); margin-bottom: 8px; }
+.radius-card code { font-size: 0.7rem; font-weight: 800; color: var(--on-surface); }
+.radius-card span { display: block; font-size: 0.68rem; color: var(--on-surface-dim); }
+
+/* elevation */
+.elev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s-sm); }
+.elev-card { border-radius: var(--r-md); padding: var(--s-sm); }
+.elev-card h4 { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+.elev-card p { font-size: 0.8rem; color: var(--on-surface-dim); line-height: 1.5; }
+.elev-0 { background: var(--surface); border: 1px solid var(--hairline); }
+.elev-1 { background: var(--surface-2); border: 1px solid var(--hairline); }
+.elev-2 { background: var(--surface-3); border: 1px solid var(--hairline); }
+.elev-3 { background: var(--surface-2); border: 1px solid var(--hairline-strong); box-shadow: var(--shadow-overlay); }
+
+/* component demo frames */
+.demo { background: var(--surface); border: 1px dashed var(--hairline); border-radius: var(--r-md); padding: var(--s-sm); margin-bottom: var(--s-sm); }
+.demo-label { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--neutral); margin-bottom: var(--s-xs); }
+.row { display: flex; flex-wrap: wrap; gap: var(--s-xs); align-items: center; }
+
+/* buttons (live) */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: var(--r-sm); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border: 1px solid transparent; font-family: var(--font); transition: all var(--t-ui) var(--ease); }
+.btn-primary { background: var(--ember); color: var(--on-surface); border-color: var(--ember); }
+.btn-primary:hover { background: var(--rust); border-color: var(--rust); }
+.btn-secondary { background: var(--surface-3); color: var(--on-surface-dim); border-color: var(--hairline); }
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary-bright); }
+.btn-primary.is-hover { background: var(--rust); border-color: var(--rust); }
+.btn-secondary.is-hover { border-color: var(--primary); color: var(--primary-bright); }
+.btn-primary.is-disabled, .btn-secondary.is-disabled { opacity: 0.4; cursor: not-allowed; }
+.btn.is-focus { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+/* inputs (live) */
+.fld { display: flex; flex-direction: column; gap: 6px; min-width: 220px; flex: 1; }
+.fld label { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--on-surface-dim); }
+.fld input { background: var(--surface-2); border: 1px solid var(--hairline); color: var(--on-surface); padding: 9px 12px; border-radius: var(--r-sharp); font: 400 0.88rem/1.45 var(--font); }
+.fld input::placeholder { color: var(--on-surface-dim); }
+.fld input.is-focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(232,110,52,0.3); outline: none; }
+
+/* badges (live) — same recipe as the tracker */
+.chip { display: inline-flex; align-items: center; gap: 7px; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 11px; border-radius: var(--r-pill); border: 1px solid var(--hairline); }
+.chip .dot { width: 7px; height: 7px; border-radius: var(--r-pill); flex: none; }
+.st-lead { background: var(--fill-lead); color: var(--status-lead-text); }
+.st-lead .dot { background: var(--status-lead); }
+.st-progress { background: var(--fill-progress); color: var(--status-progress-text); }
+.st-progress .dot { background: var(--status-progress); }
+.st-review { background: var(--fill-review); color: var(--status-review-text); }
+.st-review .dot { background: var(--status-review); }
+.st-complete { background: var(--fill-complete); color: var(--status-complete-text); }
+.st-complete .dot { background: var(--status-complete); }
+.st-billed { background: var(--status-billed); color: var(--status-billed-text); border-color: var(--status-billed); }
+.st-billed .dot { background: var(--ember); }
+.h-on-track { background: var(--fill-complete); color: var(--health-on-track); }
+.h-at-risk { background: var(--fill-review); color: var(--health-at-risk); }
+.h-waiting { background: var(--health-waiting); color: var(--health-waiting-text); border-color: transparent; }
+.h-ready { background: var(--surface-2); color: var(--health-ready-to-bill); }
+.inv-draft { background: var(--surface-2); color: var(--invoice-draft); }
+.inv-sent { background: var(--fill-progress); color: var(--invoice-sent); }
+.inv-paid { background: var(--invoice-paid); color: var(--status-billed-text); border-color: var(--invoice-paid); }
+.inv-overdue { background: var(--invoice-overdue); color: var(--invoice-overdue-text); border-color: transparent; }
+
+/* avatars */
+.av { width: 22px; height: 22px; border-radius: var(--r-pill); display: inline-flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 800; border: 1px solid; }
+.av-jon { background: var(--fill-progress); border-color: var(--owner-jon); color: var(--owner-jon-text); }
+.av-joy { background: var(--fill-complete); border-color: var(--owner-joy); color: var(--owner-joy-text); }
+
+/* filter chips */
+.fchip { display: inline-flex; padding: 5px 12px; border-radius: var(--r-pill); font-size: 0.64rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border: 1px solid transparent; color: var(--on-surface-dim); background: var(--surface-2); }
+.fchip.active { background: var(--fill-progress); color: var(--status-progress-text); border-color: transparent; }
+
+/* nav tabs */
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--hairline); margin-bottom: -1px; }
+.tab { padding: 12px 16px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--on-surface-dim); position: relative; background: none; border: none; cursor: pointer; font-family: var(--font); }
+.tab.active { color: var(--on-surface); }
+.tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: var(--primary); }
+
+/* KPI card */
+.kpi { background: var(--surface-2); border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 12px 16px; min-width: 150px; position: relative; overflow: hidden; }
+.kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--primary); opacity: 0; transition: opacity var(--t-ui) var(--ease); }
+.kpi:hover::before { opacity: 1; }
+.kpi .k { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--on-surface-dim); margin-bottom: 6px; }
+.kpi .v { font-size: 1.35rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+
+/* job card demo */
+.jcard-demo { width: min(300px, 100%); background: var(--surface-3); border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 10px 12px; }
+.jcard-demo .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.jcard-demo .num { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.08em; color: var(--on-surface-dim); font-variant-numeric: tabular-nums; }
+.jcard-demo .move { width: 22px; height: 20px; display: grid; place-items: center; border: 1px solid var(--hairline); border-radius: var(--r-sm); background: none; color: var(--on-surface-dim); cursor: pointer; }
+.jcard-demo .title { font-size: 0.88rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 2px; }
+.jcard-demo .client { font-size: 0.75rem; color: var(--on-surface-dim); margin-bottom: 8px; }
+.jcard-demo .foot { display: flex; align-items: center; gap: 8px; }
+.jcard-demo .due { margin-left: auto; font-size: 0.68rem; font-weight: 700; color: var(--primary-bright); font-variant-numeric: tabular-nums; }
+
+/* column demo */
+.bcol-demo { width: min(300px, 100%); background: var(--surface-2); border: 1px solid var(--hairline); border-radius: var(--r-md); }
+.bcol-demo .bh { display: flex; align-items: center; gap: 7px; padding: 9px 10px; border-bottom: 1px solid var(--hairline-subtle); }
+.bcol-demo .bh .t { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--status-progress-text); }
+.bcol-demo .bh .c { margin-left: auto; font-size: 0.68rem; font-weight: 700; color: var(--on-surface-dim); background: var(--surface-3); border-radius: var(--r-pill); padding: 2px 7px; font-variant-numeric: tabular-nums; }
+.bcol-demo .bb { padding: var(--s-xs); display: flex; flex-direction: column; gap: var(--s-xs); }
+
+/* modal demo */
+.modal-demo { width: min(420px, 100%); background: var(--surface-2); border: 1px solid var(--hairline-strong); border-radius: var(--r-lg); box-shadow: var(--shadow-overlay); overflow: hidden; }
+.modal-demo .mh { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--hairline); }
+.modal-demo .mt { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; }
+.modal-demo .mx { font-size: 1.3rem; color: var(--on-surface-dim); cursor: pointer; background: none; border: none; }
+.modal-demo .mb { padding: var(--s-sm); display: flex; flex-direction: column; gap: var(--s-xs); }
+
+/* do / don't */
+.dd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s-sm); }
+.dd-col { border-radius: var(--r-md); padding: var(--s-sm); border: 1px solid var(--hairline); }
+.dd-col.do { background: var(--surface-2); }
+.dd-col.dont { background: var(--surface); border-color: var(--ember); }
+.dd-col h3 { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: var(--s-xs); }
+.dd-col.do h3 { color: var(--sky); }
+.dd-col.dont h3 { color: var(--amber); }
+.dd-col li { list-style: none; padding: 7px 0 7px 22px; position: relative; font-size: 0.84rem; color: var(--on-surface-dim); line-height: 1.5; border-bottom: 1px solid var(--hairline-subtle); }
+.dd-col li:last-child { border-bottom: none; }
+.dd-col li::before { position: absolute; left: 0; font-weight: 800; }
+.dd-col.do li::before { content: '✓'; color: var(--sky); }
+.dd-col.dont li::before { content: '✗'; color: var(--amber); }
+
+.ds-foot { border-top: 1px solid var(--hairline); padding-block: var(--s-sm) var(--s-lg); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--neutral); display: flex; justify-content: space-between; gap: var(--s-sm); flex-wrap: wrap; }
+
+@media (max-width: 720px) {
+  .type-row { grid-template-columns: 1fr; gap: 4px; }
+  .sw-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="ds-head">
+  <h1>GDP Tracker <em>Design System</em></h1>
+  <p>Dark editorial-industrial system for the GDP Project Tracker ops board — extracted from the graysondp.com (GDP2027) build. Ink canvas, bone type, one heat accent, hairline structure.</p>
+  <p class="mirror-note">Human-readable mirror of docs/design.md — token values rendered live</p>
+</header>
+
+<!-- ============ COLORS ============ -->
+<section class="ds-sec">
+  <h2><span class="n">01</span> Colors — canvas, hairlines, type</h2>
+  <p class="sec-note">Structure comes from the ink ramp and hairlines; text from the bone ramp. Contrast ratios are measured on the #333333 canvas.</p>
+
+  <div class="group-label">Canvas — the ink ramp</div>
+  <div class="sw-grid">
+    <div class="sw"><div class="sw-block" style="background:var(--surface)"></div><div class="sw-info"><code>surface</code><span class="hex">#333333</span><span class="use">page canvas</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--surface-2)"></div><div class="sw-info"><code>surface-2</code><span class="hex">#3D3D3D</span><span class="use">panels, board columns, modals</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--surface-3)"></div><div class="sw-info"><code>surface-3</code><span class="hex">#474747</span><span class="use">cards, inputs on panels</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--surface-hover)"></div><div class="sw-info"><code>surface-hover</code><span class="hex">#525252</span><span class="use">hover lift (derived ramp grade)</span></div></div>
+  </div>
+
+  <div class="group-label">Hairlines — the structural shadow</div>
+  <div class="sw-grid">
+    <div class="sw"><div class="sw-block hair-block" style="box-shadow: inset 0 0 0 1px var(--hairline)"></div><div class="sw-info"><code>hairline</code><span class="hex">rgba(242,240,236,.14)</span><span class="use">cards, columns, rows</span></div></div>
+    <div class="sw"><div class="sw-block hair-block" style="box-shadow: inset 0 0 0 1px var(--hairline-subtle)"></div><div class="sw-info"><code>hairline-subtle</code><span class="hex">rgba(242,240,236,.07)</span><span class="use">internal dividers</span></div></div>
+    <div class="sw"><div class="sw-block hair-block" style="box-shadow: inset 0 0 0 1px var(--hairline-strong)"></div><div class="sw-info"><code>hairline-strong</code><span class="hex">rgba(242,240,236,.26)</span><span class="use">hover emphasis, floating edges</span></div></div>
+  </div>
+
+  <div class="group-label">Type on ink — the bone ramp</div>
+  <div class="sw-grid">
+    <div class="sw"><div class="sw-block"><span class="txt-line" style="border:none;padding:0;background:none">The quick brown fox</span></div><div class="sw-info"><code>on-surface</code><span class="hex">#F2F0EC</span><span class="use">primary text</span><span class="ratio pass">11.1:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span style="color:var(--on-surface-dim);font-size:0.85rem">Jumps over the lazy dog</span></div><div class="sw-info"><code>on-surface-dim</code><span class="hex">#A9A6A1</span><span class="use">secondary text, labels</span><span class="ratio pass">5.2:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span style="color:var(--on-surface-faint);font-size:0.85rem">Whisper — decorative only</span></div><div class="sw-info"><code>on-surface-faint</code><span class="hex">#6E6C69</span><span class="use">decorative marks only</span><span class="ratio no">2.4:1 — never text</span></div></div>
+  </div>
+</section><section class="ds-sec">
+  <h2><span class="n">02</span> Colors — brand + semantic states</h2>
+  <p class="sec-note">One accent family (heat) carries "interactive" and "active"; the temperature arc Lead → Billed reads gray → hot → amber → cool → paper. Dot = hue carrier (3:1+ as UI component); text = AA variant (4.5:1+).</p>
+
+  <div class="group-label">Brand</div>
+  <div class="sw-grid">
+    <div class="sw"><div class="sw-block" style="background:var(--primary)"></div><div class="sw-info"><code>primary — heat</code><span class="hex">#E86E34</span><span class="use">indicators, focus, large display</span><span class="ratio ui-only">4.1:1 UI only</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--primary-bright)"></div><div class="sw-info"><code>primary-bright — heat-hi</code><span class="hex">#F49B6E</span><span class="use">small heat-colored text (derived)</span><span class="ratio pass">5.9:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--primary-deep)"></div><div class="sw-info"><code>primary-deep — heat-2</code><span class="hex">#C4551F</span><span class="use">large hover fills</span><span class="ratio ui-only">2.8:1 fill only</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--ember)"></div><div class="sw-info"><code>ember</code><span class="hex">#B24A19</span><span class="use">CTA fills, filled alert chips</span><span class="ratio ui-only">bone on ember 4.8:1</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--rust)"></div><div class="sw-info"><code>rust</code><span class="hex">#7A2E0A</span><span class="use">deep CTA hover</span><span class="ratio ui-only">bone on rust 8.3:1</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--neutral)"></div><div class="sw-info"><code>neutral — sun</code><span class="hex">#939598</span><span class="use">Lead dot, demo status</span><span class="ratio ui-only">4.2:1 UI only</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--amber)"></div><div class="sw-info"><code>amber</code><span class="hex">#F0A03C</span><span class="use">review, at-risk (GDP2027 amber env)</span><span class="ratio pass">5.9:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--sky)"></div><div class="sw-info"><code>sky</code><span class="hex">#D0E1E9</span><span class="use">settled / on-track / paid</span><span class="ratio pass">9.4:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block" style="background:var(--paper)"></div><div class="sw-info"><code>paper</code><span class="hex">#F7F6F4</span><span class="use">terminal / filed states</span><span class="ratio pass">ink on paper 11.7:1</span></div></div>
+  </div>
+
+  <div class="group-label">Pipeline status — the temperature arc (rendered as live chips)</div>
+  <div class="row" style="margin-bottom:10px">
+    <span class="chip st-lead"><span class="dot"></span>Lead</span>
+    <span class="chip st-progress"><span class="dot"></span>In Progress</span>
+    <span class="chip st-review"><span class="dot"></span>Review</span>
+    <span class="chip st-complete"><span class="dot"></span>Complete</span>
+    <span class="chip st-billed"><span class="dot"></span>Billed</span>
+  </div>
+  <div class="sw-grid">
+    <div class="sw"><div class="sw-block"><span class="chip st-lead"><span class="dot"></span>Lead</span></div><div class="sw-info"><code>status-lead</code><span class="hex">dot #939598 · text #A9A6A1</span><span class="use">neutral prospect — uncommitted</span><span class="ratio pass">text 5.2:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip st-progress"><span class="dot"></span>In Progress</span></div><div class="sw-info"><code>status-progress</code><span class="hex">dot #E86E34 · text #F49B6E</span><span class="use">active work — the heat</span><span class="ratio pass">text 5.9:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip st-review"><span class="dot"></span>Review</span></div><div class="sw-info"><code>status-review</code><span class="hex">#F0A03C</span><span class="use">awaiting review — in the light</span><span class="ratio pass">text 5.9:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip st-complete"><span class="dot"></span>Complete</span></div><div class="sw-info"><code>status-complete</code><span class="hex">#D0E1E9</span><span class="use">delivered — cooling down</span><span class="ratio pass">text 9.4:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip st-billed"><span class="dot"></span>Billed</span></div><div class="sw-info"><code>status-billed</code><span class="hex">fill #F7F6F4 · text #333333</span><span class="use">settled — filed on paper (filled chip)</span><span class="ratio pass">11.7:1 AA</span></div></div>
+  </div>
+
+  <div class="group-label">Job health (live chips)</div>
+  <div class="row" style="margin-bottom:10px">
+    <span class="chip h-on-track">On Track</span>
+    <span class="chip h-at-risk">At Risk</span>
+    <span class="chip h-waiting">Waiting</span>
+    <span class="chip h-ready">Ready to Bill</span>
+  </div>
+  <div class="sw-grid">
+    <div class="sw"><div class="sw-block"><span class="chip h-on-track">On Track</span></div><div class="sw-info"><code>health-on-track</code><span class="hex">#D0E1E9</span><span class="use">calm — nothing needed</span><span class="ratio pass">9.4:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip h-at-risk">At Risk</span></div><div class="sw-info"><code>health-at-risk</code><span class="hex">#F0A03C</span><span class="use">attention — timeline slipping</span><span class="ratio pass">5.9:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip h-waiting">Waiting</span></div><div class="sw-info"><code>health-waiting</code><span class="hex">fill #B24A19 · text #F2F0EC</span><span class="use">blocked — filled alert chip</span><span class="ratio pass">4.8:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip h-ready">Ready to Bill</span></div><div class="sw-info"><code>health-ready-to-bill</code><span class="hex">#F7F6F4</span><span class="use">money state — echoes Billed</span><span class="ratio pass">11.7:1 AA</span></div></div>
+  </div>
+
+  <div class="group-label">Invoice states (live chips)</div>
+  <div class="row" style="margin-bottom:10px">
+    <span class="chip inv-draft">Draft</span>
+    <span class="chip inv-sent">Sent</span>
+    <span class="chip inv-paid">Paid</span>
+    <span class="chip inv-overdue">Overdue</span>
+  </div>
+  <div class="sw-grid">
+    <div class="sw"><div class="sw-block"><span class="chip inv-draft">Draft</span></div><div class="sw-info"><code>invoice-draft</code><span class="hex">#A9A6A1</span><span class="use">not yet real money</span><span class="ratio pass">5.2:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip inv-sent">Sent</span></div><div class="sw-info"><code>invoice-sent</code><span class="hex">#F49B6E</span><span class="use">in flight — heat grade</span><span class="ratio pass">5.9:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip inv-paid">Paid</span></div><div class="sw-info"><code>invoice-paid</code><span class="hex">fill #F7F6F4 · text #333333</span><span class="use">settled — filled paper chip</span><span class="ratio pass">11.7:1 AA</span></div></div>
+    <div class="sw"><div class="sw-block"><span class="chip inv-overdue">Overdue</span></div><div class="sw-info"><code>invoice-overdue</code><span class="hex">fill #B24A19 · text #F2F0EC</span><span class="use">blocked — filled alert chip</span><span class="ratio pass">4.8:1 AA</span></div></div>
+  </div>
+
+  <div class="group-label">Owners (live avatars)</div>
+  <div class="row" style="margin-bottom:10px">
+    <span class="av av-jon">J</span> <span style="font-size:0.85rem;color:var(--on-surface-dim)">Jon — heat</span>
+    <span class="av av-joy">J</span> <span style="font-size:0.85rem;color:var(--on-surface-dim)">Joy — sky</span>
+  </div>
+</section>
+
+<!-- ============ TYPOGRAPHY ============ -->
+<section class="ds-sec">
+  <h2><span class="n">03</span> Typography — one family, Nunito</h2>
+  <p class="sec-note">Display, text, and label roles are all Nunito ('Helvetica Neue' fallback) — exactly the GDP2027 system, distinguished by weight, size, and tracking. The label role is the voice of authority; numerals are tabular so columns of figures align.</p>
+
+  <div class="type-row"><div class="type-meta"><code>display-xl</code><br>Nunito 800 · clamp(2.1–4.6rem) · −0.04em</div><div class="t-display-xl">Digital Experiences</div></div>
+  <div class="type-row"><div class="type-meta"><code>display</code><br>Nunito 800 · 1.6rem · −0.03em</div><div class="t-display">Board title &amp; modal headlines</div></div>
+  <div class="type-row"><div class="type-meta"><code>heading</code><br>Nunito 700 · 1.15rem · −0.02em</div><div class="t-heading">Swimlane names and section heads</div></div>
+  <div class="type-row"><div class="type-meta"><code>body-strong</code><br>Nunito 600 · 0.9rem</div><div class="t-body-strong">Card titles — Platform Redesign, job 7804</div></div>
+  <div class="type-row"><div class="type-meta"><code>body</code><br>Nunito 400 · 0.9rem · 1.55</div><div class="t-body">Body copy reads like the studio's own reports — calm, precise, editorial.</div></div>
+  <div class="type-row"><div class="type-meta"><code>label</code><br>Nunito 800 · 0.68rem · +0.12em uppercase</div><div class="t-label">Column names · KPI names · badges · buttons</div></div>
+  <div class="type-row"><div class="type-meta"><code>caption</code><br>Nunito 500 · 0.78rem</div><div class="t-caption">Client lines, helper text, quiet metadata</div></div>
+  <div class="type-row" style="border-bottom:none"><div class="type-meta"><code>numeric</code><br>Nunito 700 · 0.95rem · tnum</div><div class="t-numeric">#7804 · 3.5h · $18,000 · 12d left</div></div>
+</section><svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+<symbol id="sun" viewBox="0 0 80.79 80.79"><path fill="currentColor" d="M36.73,80.79c-.64,0-1.31-.05-2-.16-2.92-.45-5.1-1.64-6.46-3.53-1.23-1.71-1.68-3.87-1.31-6.26l.04-.25,2.22-6.9c-1.48-.71-2.89-1.57-4.21-2.55l-5.39,5.41-.2.15c-1.95,1.43-4.08,2.01-6.16,1.7-2.3-.35-4.35-1.73-6.1-4.12-1.74-2.38-2.45-4.76-2.11-7.06.31-2.14,1.51-4.02,3.47-5.45l.21-.16,7.01-3.53c-.4-1.29-.7-2.61-.9-3.95l-7.45.02-.25-.04c-4.05-.63-8-3.69-6.96-10.38.45-2.91,1.63-5.09,3.5-6.49,1.73-1.29,3.91-1.77,6.31-1.4l.26.04,7.32,2.42c.62-1.18,1.33-2.3,2.13-3.37l-5.25-5.23-.15-.2c-2.42-3.31-3.05-8.27,2.42-12.26,4.56-3.33,9.48-2.8,12.51,1.36l.16.21,3.46,6.87c1.31-.4,2.66-.7,4.03-.88l-.02-7.43.04-.25c.63-4.05,3.69-8,10.38-6.96,5.59.87,8.68,4.72,7.89,9.81l-.04.26-2.45,7.42c.86.46,1.7.98,2.5,1.54l5.19-5.29.21-.16c4.16-3.04,9-2.05,12.33,2.51,1.75,2.39,2.44,4.77,2.07,7.06-.33,2.08-1.54,3.93-3.5,5.35l-.2.15-6.4,3.28c.41,1.21.73,2.44.95,3.7l7.6-.08.26.04c5.09.79,7.81,4.91,6.94,10.5-.46,2.92-1.64,5.1-3.53,6.46-1.71,1.23-3.87,1.69-6.26,1.31l-.24-.04-9.94-3.17c-1.68-.54-2.61-2.34-2.08-4.02.54-1.68,2.34-2.61,4.02-2.07l9.43,3.01c.45.05.97.04,1.31-.21.43-.31.78-1.13.95-2.25.41-2.6-.53-3-1.36-3.15l-12.97.13-.18-3.04c-.15-2.53-.78-4.97-1.87-7.24l-1.35-2.81,11.3-5.8c.35-.28.71-.66.78-1.07.09-.53-.25-1.35-.92-2.27-1.55-2.13-2.49-1.74-3.18-1.27l-8.96,9.13-2.28-2.03c-1.71-1.52-3.65-2.72-5.76-3.55l-2.81-1.11,4.12-12.46c.11-.83.02-1.84-2.59-2.25-2.53-.39-2.87.46-3.03,1.38l.03,13.04-3.16.04c-2.63.04-5.18.59-7.56,1.64l-2.78,1.23-5.87-11.66c-.51-.66-1.29-1.31-3.42.24-2.07,1.51-1.71,2.35-1.17,3.12l9.2,9.16-2.17,2.27c-1.79,1.87-3.16,4.03-4.09,6.43l-1.1,2.84-12.4-4.09c-.42-.04-.93-.02-1.27.24-.46.34-.82,1.2-1,2.34-.39,2.53.46,2.87,1.38,3.03l13.02-.03.07,3.13c.06,2.61.63,5.13,1.69,7.49l1.25,2.79-11.81,5.95c-.33.27-.67.64-.73,1.06-.08.57.26,1.43.95,2.37.67.92,1.35,1.49,1.88,1.57.41.06.88-.17,1.26-.41l9.29-9.33,2.27,2.16c2.04,1.94,4.53,3.44,7.18,4.34l2.99,1.01-3.93,12.21c-.05.45-.03.97.21,1.31.31.43,1.13.78,2.25.95,2.6.41,3-.53,3.15-1.35l-.13-12.95,3.01-.2c2.51-.17,4.92-.82,7.17-1.91l2.82-1.38,5.89,11.48c.28.35.66.71,1.07.78.53.08,1.35-.25,2.27-.92.94-.68,1.53-1.4,1.62-1.96.07-.43-.15-.9-.39-1.26l-7.12-7.24c-1.24-1.26-1.22-3.29.04-4.53,1.26-1.24,3.29-1.22,4.53.04l7.47,7.6.14.19c1.43,1.96,2,4.12,1.65,6.25-.38,2.3-1.78,4.35-4.16,6.08-2.39,1.75-4.77,2.44-7.07,2.07-2.08-.34-3.93-1.54-5.35-3.5l-.15-.2-3.36-6.54c-1.18.41-2.39.73-3.62.96l.08,7.63-.04.26c-.69,4.46-3.95,7.1-8.5,7.1h0Z"/></symbol>
+</svg>
+<!-- ============ SPACING ============ -->
+<section class="ds-sec">
+  <h2><span class="n">04</span> Spacing — 4 / 8 / 16 / 24 / 40 / 64</h2>
+  <p class="sec-note">Dense ops rhythm. The marketing site's larger steps (96–200px) are deliberately absent; a working board sits on the small end of the scale.</p>
+  <div class="space-row"><span class="space-name">micro</span><div class="space-bar" style="width:4px"></div><span class="space-val">4px — chip gaps, hairline nudges</span></div>
+  <div class="space-row"><span class="space-name">xs</span><div class="space-bar" style="width:8px"></div><span class="space-val">8px — card stacks, column padding</span></div>
+  <div class="space-row"><span class="space-name">sm</span><div class="space-bar" style="width:16px"></div><span class="space-val">16px — section padding, form gaps</span></div>
+  <div class="space-row"><span class="space-name">md</span><div class="space-bar" style="width:24px"></div><span class="space-val">24px — modal/drawer body padding</span></div>
+  <div class="space-row"><span class="space-name">lg</span><div class="space-bar" style="width:40px"></div><span class="space-val">40px — empty states, breathing room</span></div>
+  <div class="space-row"><span class="space-name">xl</span><div class="space-bar" style="width:64px"></div><span class="space-val">64px — rare; major pauses only</span></div>
+  <div class="space-row"><span class="space-name">gutter</span><div class="space-bar" style="width:32px"></div><span class="space-val">clamp(16px, 3vw, 32px) — page gutters</span></div>
+</section>
+
+<!-- ============ RADIUS ============ -->
+<section class="ds-sec">
+  <h2><span class="n">05</span> Shapes — machined, not cushioned</h2>
+  <p class="sec-note">2–4px is the working radius. The pill is earned, not default: only chips, badges, filter pills, and avatars take 999px — the exact components that are pills on graysondp.com.</p>
+  <div class="radius-grid">
+    <div class="radius-card"><div class="r-box" style="border-radius:var(--r-sharp)"></div><code>sharp 2px</code><span>inputs, focus, bars</span></div>
+    <div class="radius-card"><div class="r-box" style="border-radius:var(--r-sm)"></div><code>sm 3px</code><span>buttons</span></div>
+    <div class="radius-card"><div class="r-box" style="border-radius:var(--r-md)"></div><code>md 4px</code><span>cards, columns, panels</span></div>
+    <div class="radius-card"><div class="r-box" style="border-radius:var(--r-lg)"></div><code>lg 6px</code><span>modals, raised surfaces</span></div>
+    <div class="radius-card"><div class="r-box" style="border-radius:var(--r-xl)"></div><code>xl 8px</code><span>oversized surfaces</span></div>
+    <div class="radius-card"><div class="r-box" style="border-radius:var(--r-pill);width:72px;justify-self:center"></div><code>pill 999px</code><span>chips · badges · avatars</span></div>
+  </div>
+</section>
+
+<!-- ============ ELEVATION ============ -->
+<section class="ds-sec">
+  <h2><span class="n">06</span> Elevation &amp; depth — hairlines first</h2>
+  <p class="sec-note">Structure comes from borders and the ink ramp, not shadows. Shadows exist only for layers that genuinely float above the board.</p>
+  <div class="elev-grid">
+    <div class="elev-card elev-0"><h4>Level 0 — canvas</h4><p>#333333. The page itself. No border needed at the outermost layer.</p></div>
+    <div class="elev-card elev-1"><h4>Level 1 — panel</h4><p>#3D3D3D + hairline. Board columns, KPI cards, modal bodies' siblings.</p></div>
+    <div class="elev-card elev-2"><h4>Level 2 — card</h4><p>#474747 + hairline. Job cards; hover heats the border and lifts 2px.</p></div>
+    <div class="elev-card elev-3"><h4>Level 3 — floating</h4><p>Panel + strong hairline + shadow + blurred ink backdrop. Modal, drawer, move menu, FAB only.</p></div>
+  </div>
+</section>
+
+<!-- ============ COMPONENTS ============ -->
+<section class="ds-sec">
+  <h2><span class="n">07</span> Components — live</h2>
+
+  <div class="group-label">Buttons — primary (ember→rust), secondary (hairline), states</div>
+  <div class="demo">
+    <div class="demo-label">hover / focus / disabled rendered as static copies</div>
+    <div class="row">
+      <button class="btn btn-primary">New Job</button>
+      <button class="btn btn-primary is-hover">Hover</button>
+      <button class="btn btn-primary is-focus">Focus</button>
+      <button class="btn btn-primary is-disabled">Disabled</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn btn-secondary">+ Client</button>
+      <button class="btn btn-secondary is-hover">Hover</button>
+      <button class="btn btn-secondary is-focus">Focus</button>
+      <button class="btn btn-secondary is-disabled">Disabled</button>
+    </div>
+  </div>
+
+  <div class="group-label">Inputs — sharp, hairline, heat focus ring</div>
+  <div class="demo">
+    <div class="row" style="align-items:flex-start">
+      <div class="fld"><label>Project Name</label><input placeholder="e.g. Website Redesign"></div>
+      <div class="fld"><label>Focus state</label><input class="is-focus" value="Analytics Dashboard"></div>
+    </div>
+  </div>
+
+  <div class="group-label">Status + health badges — pill, dot carries hue, text stays AA</div>
+  <div class="demo">
+    <div class="row">
+      <span class="chip st-lead"><span class="dot"></span>Lead</span>
+      <span class="chip st-progress"><span class="dot"></span>In Progress</span>
+      <span class="chip st-review"><span class="dot"></span>Review</span>
+      <span class="chip st-complete"><span class="dot"></span>Complete</span>
+      <span class="chip st-billed"><span class="dot"></span>Billed</span>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <span class="chip h-on-track">On Track</span>
+      <span class="chip h-at-risk">At Risk</span>
+      <span class="chip h-waiting">Waiting</span>
+      <span class="chip h-ready">Ready to Bill</span>
+      <span class="chip inv-draft">Draft</span>
+      <span class="chip inv-sent">Sent</span>
+      <span class="chip inv-paid">Paid</span>
+      <span class="chip inv-overdue">Overdue</span>
+    </div>
+  </div>
+
+  <div class="group-label">Filter chips + owner avatars</div>
+  <div class="demo">
+    <div class="row">
+      <span class="fchip">All</span><span class="fchip active">Jon</span><span class="fchip">Joy</span>
+      <span style="width:24px"></span>
+      <span class="av av-jon">J</span><span class="av av-joy">J</span>
+    </div>
+  </div>
+
+  <div class="group-label">Nav tabs — quiet labels, heat underline</div>
+  <div class="demo">
+    <div class="tabs"><button class="tab active">Board</button><button class="tab">Projects</button><button class="tab">Clients</button><button class="tab">Time</button><button class="tab">Invoices</button></div>
+  </div>
+
+  <div class="group-label">KPI card</div>
+  <div class="demo">
+    <div class="row">
+      <div class="kpi"><div class="k">Active Jobs</div><div class="v">5</div></div>
+      <div class="kpi"><div class="k">Hours This Month</div><div class="v" style="color:var(--on-surface-dim)">42.5h</div></div>
+      <div class="kpi"><div class="k">Ready to Bill</div><div class="v" style="color:var(--sky)">$14,900</div></div>
+      <div class="kpi"><div class="k">Overdue</div><div class="v" style="color:var(--amber)">$3,000</div></div>
+    </div>
+  </div>
+
+  <div class="group-label">Job card — the board's atom</div>
+  <div class="demo">
+    <div class="row" style="align-items:flex-start">
+      <div class="jcard-demo">
+        <div class="top"><span class="num">#7804</span><button class="move" title="Move status">⇄</button></div>
+        <div class="title">Platform Redesign</div>
+        <div class="client">Acme Corp</div>
+        <div class="foot">
+          <span class="av av-jon">J</span>
+          <span title="On Track" style="width:7px;height:7px;border-radius:50%;background:var(--health-on-track)"></span>
+          <span class="due">12d left</span>
+        </div>
+      </div>
+      <div class="jcard-demo" style="border-color:var(--primary);transform:translateY(-2px)">
+        <div class="top"><span class="num">#7806</span><button class="move" style="border-color:var(--primary);color:var(--primary-bright)" title="Move status">⇄</button></div>
+        <div class="title">Analytics Dashboard</div>
+        <div class="client">CloudNine Digital</div>
+        <div class="foot">
+          <span class="av av-joy">J</span>
+          <span class="due" style="color:var(--amber)">3d overdue</span>
+        </div>
+        <div style="margin-top:8px;font-size:0.68rem;color:var(--neutral)">↑ hover state: heat border, 2px lift</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-label">Board column — panel, dot + label + count, empty = dashed sun</div>
+  <div class="demo">
+    <div class="row" style="align-items:flex-start">
+      <div class="bcol-demo">
+        <div class="bh"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-progress)"></span><span class="t">In Progress</span><span class="c">2</span></div>
+        <div class="bb">
+          <div class="jcard-demo" style="width:auto">
+            <div class="top"><span class="num">#7807</span><button class="move">⇄</button></div>
+            <div class="title">Patient Portal</div>
+            <div class="client">Evergreen Health</div>
+            <div class="foot"><span class="av av-joy">J</span><span class="due" style="color:var(--on-surface-dim)">Sep 15</span></div>
+          </div>
+          <div class="jcard-demo" style="width:auto">
+            <div class="top"><span class="num">#7805</span><button class="move">⇄</button></div>
+            <div class="title">Mobile App MVP</div>
+            <div class="client">BlueSky Ventures</div>
+            <div class="foot"><span class="av av-joy">J</span><span class="due" style="color:var(--amber)">2d left</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="bcol-demo">
+        <div class="bh"><span style="width:8px;height:8px;border-radius:50%;background:var(--status-review)"></span><span class="t" style="color:var(--status-review-text)">Review</span><span class="c">0</span></div>
+        <div class="bb">
+          <div style="border:1px dashed var(--hairline);border-radius:var(--r-sm);padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:5px">
+            <svg width="26" height="26" viewBox="0 0 80.79 80.79" style="opacity:.45;color:var(--on-surface-faint)"><use href="#sun"/></svg>
+            <span style="font-size:0.72rem;color:var(--on-surface-dim)">No jobs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-label">Modal — level 3, blurred ink backdrop below it</div>
+  <div class="demo" style="background:var(--backdrop);backdrop-filter:blur(6px)">
+    <div class="row" style="justify-content:center;padding:24px 0">
+      <div class="modal-demo">
+        <div class="mh"><span class="mt">New Job</span><button class="mx">&times;</button></div>
+        <div class="mb">
+          <div class="fld"><label>Client</label><input value="Acme Corp"></div>
+          <div class="fld"><label>Project Name</label><input placeholder="e.g. Website Redesign"></div>
+          <div class="row" style="justify-content:flex-end;margin-top:6px">
+            <button class="btn btn-secondary">Cancel</button>
+            <button class="btn btn-primary">Create Job</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><section class="ds-sec">
+  <h2><span class="n">08</span> Do &amp; Don&rsquo;t</h2>
+  <p class="sec-note">The enforcement layer &mdash; what keeps this tool recognizable as GDP over time.</p>
+
+<div class="dd-grid">
+  <div class="dd-col do">
+    <h3>✓ Do</h3>
+    <ul>
+      <li>Set every color, radius, and spacing from the tokens in design.md — the token layer is the only place hex values live.</li>
+      <li>Use hairlines for structure; reserve shadows (and the blurred ink backdrop) for floating layers only.</li>
+      <li>Keep meaningful small text AA on ink: bone or bone-2; when text must read as heat-colored, use heat-hi (5.9:1), never heat.</li>
+      <li>Use the label role — 800 weight, uppercase, +0.12em tracking — for column names, KPI names, badges, and buttons.</li>
+      <li>Follow the temperature arc when adding states: work heats up, delivery cools, money settles to paper.</li>
+      <li>Make filled chips mean something: filled = settled or blocked (Billed, Waiting, Overdue); outline = in flight.</li>
+    </ul>
+  </div>
+  <div class="dd-col dont">
+    <h3>✗ Don't</h3>
+    <ul>
+      <li>Never introduce a color outside this palette — especially no bootstrap-blue, no green "success," no purple.</li>
+      <li>No rounded-bubble UI: cards, panels, and columns stay 2–8px; the pill is only for chips, badges, and avatars.</li>
+      <li>No grey-dashboard chaos: one accent family (heat), one neutral ramp (ink/bone), hairline structure — depth by ramp, not by noise.</li>
+      <li>Never use bone-3 for meaningful text (2.4:1) or heat/ember as small text on ink — the derived AA grades exist for exactly this.</li>
+      <li>No drop shadows on inline cards, columns, or rows; borders carry the structure.</li>
+      <li>Don't drift from the documented status mapping when adding new states — extend the arc, don't break it.</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<footer class="ds-foot">
+  <span>GDP Tracker Design System — mirror of docs/design.md</span>
+  <span>Extracted from graysondp.com (GDP2027) · dark-first · WCAG AA</span>
+</footer>
+
+</div>
+</body>
+</html>
