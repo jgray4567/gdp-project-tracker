@@ -893,96 +893,70 @@ body {
 }
 
 /* ============================================
-   PIPELINE / KANBAN
+   PIPELINE / KANBAN — the board is the product
    ============================================ */
-.pipeline-board {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--sp-md);
-  min-height: 60vh;
+.board-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-xs); margin-bottom: var(--sp-sm); }
+.board-toolbar select, .board-toolbar .lane-toggle {
+  background: var(--surface-2); color: var(--on-surface-dim);
+  border: 1px solid var(--hairline); border-radius: var(--r-pill);
+  font: 800 0.68rem/1.2 var(--font-sans); letter-spacing: var(--label-spacing);
+  text-transform: uppercase; padding: 5px 12px; cursor: pointer;
 }
+.board-toolbar select option { text-transform: none; font-weight: 600; }
+.board-toolbar .lane-toggle.on { background: var(--fill-progress); color: var(--status-progress-text); border-color: transparent; }
 
-.pipeline-col {
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--sp-md);
-  display: flex;
-  flex-direction: column;
-}
+.board-lane { margin-bottom: var(--sp-sm); min-width: 0; }
+.board-scroll, #pipelineBoard { overflow-x: auto; }
+.swimlane-header { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-sm); padding: 8px 2px; margin-bottom: var(--sp-xs); }
+.swimlane-header .lane-name { font: 800 1.15rem/1.2 var(--font-sans); letter-spacing: -0.02em; color: var(--on-surface); }
+.swimlane-header .lane-meta { font: 700 0.78rem/1.4 var(--font-sans); color: var(--on-surface-dim); font-feature-settings: 'tnum'; }
 
-.pipeline-col .col-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--sp-md);
-  padding-bottom: var(--sp-sm);
-  border-bottom: 1px solid var(--border);
-}
+/* five fixed columns — scroll horizontally as a unit on phones */
+.pipeline-board { display: grid; grid-template-columns: repeat(5, var(--column-min)); gap: 8px; align-items: start; }
+@media (min-width: 1280px) { .pipeline-board { grid-template-columns: repeat(5, minmax(var(--column-min), 1fr)); } }
 
-.pipeline-col .col-title {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 600;
-}
+.pipeline-col { background: var(--surface-2); border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 8px; display: flex; flex-direction: column; min-height: 220px; }
+.pipeline-col .col-header { display: flex; align-items: center; gap: 6px; padding: 8px 4px; }
+.col-header .col-dot { width: 8px; height: 8px; border-radius: var(--r-pill); flex: 0 0 auto; }
+.col-header .col-title { font: 800 0.68rem/1 var(--font-sans); letter-spacing: var(--label-spacing); text-transform: uppercase; color: var(--on-surface-dim); white-space: nowrap; }
+.col-header .col-count { margin-left: auto; font: 700 0.78rem/1.2 var(--font-sans); font-feature-settings: 'tnum'; color: var(--on-surface-dim); background: var(--surface-3); border: 1px solid var(--hairline-subtle); padding: 1px 8px; border-radius: var(--r-pill); }
+.col-header .col-add { border: none; background: none; cursor: pointer; color: var(--on-surface-faint); font: 700 0.95rem/1 var(--font-sans); padding: 0 2px; border-radius: var(--r-sm); }
+.col-header .col-add:hover { color: var(--status-progress-text); }
 
-.pipeline-col .col-count {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  background: var(--bg-card);
-  padding: 1px 6px;
-  border-radius: 8px;
-}
+.pipeline-cards { flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 4px; min-height: 48px; border-radius: var(--r-md); transition: var(--transition); }
+.pipeline-cards.drag-over { outline: 2px dashed var(--focus-ring); outline-offset: -2px; }
+.col-empty { border: 1px dashed var(--hairline); border-radius: var(--r-md); color: var(--on-surface-faint); font: 800 0.68rem/1 var(--font-sans); letter-spacing: var(--label-spacing); text-transform: uppercase; text-align: center; padding: 18px 8px; }
 
-.pipeline-cards {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-sm);
-}
+/* job cards — hairlines, no shadows */
+.pipeline-card { position: relative; background: var(--surface-3); border: 1px solid var(--hairline); border-radius: var(--r-md); padding: 12px; cursor: pointer; transition: var(--transition); }
+.pipeline-card:hover { background: var(--surface-hover); border-color: var(--focus-ring); transform: translateY(-2px); }
+.pipeline-card.dragging { opacity: 0.5; border-color: var(--primary); }
+.pipeline-card .pc-num { font: 800 0.68rem/1 var(--font-sans); letter-spacing: var(--label-spacing); color: var(--on-surface-faint); margin-bottom: 4px; font-feature-settings: 'tnum'; }
+.pipeline-card .pc-title { font-weight: 600; font-size: 0.9rem; line-height: 1.35; color: var(--on-surface); margin-bottom: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pipeline-card .pc-client { font: 500 0.78rem/1.4 var(--font-sans); color: var(--on-surface-dim); margin-bottom: var(--sp-xs); }
+.pipeline-card .pc-footer { display: flex; align-items: center; gap: var(--sp-xs); font: 700 0.78rem/1.2 var(--font-sans); color: var(--on-surface-dim); font-feature-settings: 'tnum'; }
+.pc-footer .owner-avatar { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r-pill); font: 800 0.68rem/1 var(--font-sans); }
+.owner-avatar.jon { background: var(--fill-progress); color: var(--owner-jon-text); }
+.owner-avatar.joy { background: var(--fill-complete); color: var(--owner-joy-text); }
+.pc-footer .due-chip { white-space: nowrap; }
+.pc-footer .health-dot { width: 8px; height: 8px; border-radius: var(--r-pill); margin-left: auto; flex: 0 0 auto; }
+.health-dot.h-on-track { background: var(--health-on-track); }
+.health-dot.h-at-risk { background: var(--health-at-risk); }
+.health-dot.h-waiting { background: var(--health-waiting); }
+.health-dot.h-ready-to-bill { background: var(--health-ready-to-bill); }
+.health-dot.h-none { background: var(--hairline-strong); }
 
-.pipeline-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--sp-md);
-  cursor: grab;
-  transition: var(--transition);
-}
-
-.pipeline-card:hover {
-  border-color: var(--border-hover);
-  background: var(--bg-card-hover);
-}
-
-.pipeline-card.dragging {
-  opacity: 0.5;
-  border-color: var(--cyan);
-}
-
-.pipeline-card .pc-title {
-  font-weight: 500;
-  font-size: 0.85rem;
-  margin-bottom: 2px;
-}
-
-.pipeline-card .pc-client {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-bottom: var(--sp-sm);
-}
-
-.pipeline-card .pc-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-}
+/* move control + status popover (floating layer — shadow earned) */
+.pc-move { position: absolute; top: 6px; right: 6px; border: none; background: none; cursor: pointer; color: var(--on-surface-faint); font: 700 0.8rem/1 var(--font-sans); padding: 4px 6px; border-radius: var(--r-sm); opacity: 0; transition: var(--transition); }
+.pipeline-card:hover .pc-move, .pipeline-card.open .pc-move { opacity: 1; }
+.pc-move:hover { color: var(--status-progress-text); background: var(--surface-hover); }
+.move-popover { display: none; position: absolute; top: 28px; right: 6px; z-index: 150; min-width: 140px; background: var(--surface-2); border: 1px solid var(--hairline-strong); border-radius: var(--r-lg); padding: 6px; box-shadow: 0 12px 32px rgba(0,0,0,0.45); }
+.pipeline-card.open .move-popover { display: block; }
+.move-popover button { display: flex; align-items: center; gap: 8px; width: 100%; border: none; background: none; cursor: pointer; text-align: left; font: 800 0.68rem/1 var(--font-sans); letter-spacing: var(--label-spacing); text-transform: uppercase; color: var(--on-surface-dim); padding: 8px 10px; border-radius: var(--r-sm); }
+.move-popover button:hover { background: var(--surface-hover); color: var(--on-surface); }
+.move-popover button.mp-current { color: var(--on-surface-faint); cursor: default; }
+.move-popover button.mp-current:hover { background: none; color: var(--on-surface-faint); }
+.move-popover .mp-dot { width: 8px; height: 8px; border-radius: var(--r-pill); flex: 0 0 auto; }
 
 /* ============================================
    MODALS
@@ -1376,10 +1350,8 @@ body {
   .job-list-header { display: none; }
   .client-header { flex-wrap: wrap; gap: var(--sp-xs); }
   .client-header .client-meta { flex-wrap: wrap; }
-  .pipeline-board {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
+  /* board scrolls horizontally as a unit on phones — never a stacked pretend-board */
+  .pipeline-board { grid-template-columns: repeat(5, var(--column-min)); }
   .pipeline-col { min-height: 200px; }
   .filter-bar { flex-direction: column; }
   .search-input { width: 100%; }
@@ -1498,18 +1470,18 @@ body {
      TAB NAVIGATION
      ============================================ -->
 <nav class="tab-nav" id="tabNav">
-  <button class="tab-btn active" data-tab="projects">Projects</button>
+  <button class="tab-btn active" data-tab="pipeline">Pipeline</button>
+  <button class="tab-btn" data-tab="projects">Projects</button>
   <button class="tab-btn" data-tab="clients">Clients</button>
   <button class="tab-btn" data-tab="time">Time</button>
   <button class="tab-btn" data-tab="invoices">Invoices</button>
-  <button class="tab-btn" data-tab="pipeline">Pipeline</button>
 </nav>
 
 <!-- ============================================
      TAB CONTENT: PROJECTS
      ============================================ -->
 <main>
-  <section class="tab-content active" id="tab-projects">
+  <section class="tab-content" id="tab-projects">
     <div class="filter-bar">
       <div class="filter-group" id="ownerFilter">
         <button class="filter-chip active" data-val="all">All</button>
@@ -1596,8 +1568,25 @@ body {
   <!-- ============================================
        TAB CONTENT: PIPELINE
        ============================================ -->
-  <section class="tab-content" id="tab-pipeline">
-    <div class="pipeline-board" id="pipelineBoard"></div>
+  <section class="tab-content active" id="tab-pipeline">
+    <div class="board-toolbar">
+      <button class="lane-toggle on" id="laneToggle" onclick="toggleLanes()">View: Swimlanes</button>
+      <select id="boardClient" onchange="setBoardFilter('client', this.value)"><option value="">Client: All</option></select>
+      <select id="boardOwner" onchange="setBoardFilter('owner', this.value)">
+        <option value="">Owner: All</option>
+        <option>Jon</option>
+        <option>Joy</option>
+      </select>
+      <select id="boardStatus" onchange="setBoardFilter('status', this.value)">
+        <option value="">Status: All</option>
+        <option>Lead</option>
+        <option>In Progress</option>
+        <option>Review</option>
+        <option>Complete</option>
+        <option>Billed</option>
+      </select>
+    </div>
+    <div id="pipelineBoard"></div>
   </section>
 </main>
 
@@ -1698,6 +1687,8 @@ body {
             <option value="Lead">Lead</option>
             <option value="In Progress" selected>In Progress</option>
             <option value="Review">Review</option>
+            <option value="Complete">Complete</option>
+            <option value="Billed">Billed</option>
           </select>
         </div>
         <div class="form-group">
@@ -2670,37 +2661,142 @@ const PIPELINE_COLORS = {
   'Billed': 'var(--status-billed)'
 };
 
+// Board view state (in-memory only — never persisted)
+const BOARD_VIEW = { lane: 'client', client: '', owner: '', status: '', menu: null };
+
+function escAttr(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+function escJs(s) {
+  return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function boardHealthClass(h) {
+  const key = String(h || '').toLowerCase().replace(/\s+/g, '-');
+  return ['on-track', 'at-risk', 'waiting', 'ready-to-bill'].includes(key) ? 'h-' + key : 'h-none';
+}
+
+function boardJobFilter(j) {
+  if (BOARD_VIEW.client && j.Client !== BOARD_VIEW.client) return false;
+  if (BOARD_VIEW.owner && j.Owner !== BOARD_VIEW.owner) return false;
+  if (BOARD_VIEW.status && j.Status !== BOARD_VIEW.status) return false;
+  return true;
+}
+
 function renderPipeline() {
   const board = document.getElementById('pipelineBoard');
+  if (!board) return;
 
-  board.innerHTML = PIPELINE_STAGES.map(stage => {
-    const cards = STORE.jobs.filter(j => j.Status === stage);
-    return `
-      <div class="pipeline-col"
-           ondragover="event.preventDefault();this.style.borderColor='var(--cyan)'"
-           ondragleave="this.style.borderColor=''"
-           ondrop="handlePipelineDrop(event, '${stage}');this.style.borderColor=''">
-        <div class="col-header">
-          <span class="col-title" style="color:${PIPELINE_COLORS[stage]}">${stage}</span>
-          <span class="col-count">${cards.length}</span>
-        </div>
-        <div class="pipeline-cards">
-          ${cards.map(j => `
-            <div class="pipeline-card" draggable="true"
-                 ondragstart="event.dataTransfer.setData('text/plain','${j['Job #']}')"
-                 onclick="openProjectDetail('${j['Job #']}')">
-              <div class="pc-title">${escHtml(j.Project || 'Untitled')}</div>
-              <div class="pc-client">${escHtml(j.Client || '—')} · #${j['Job #']}</div>
-              <div class="pc-footer">
-                <span class="owner-avatar ${j.Owner === 'Jon' ? 'owner-jon' : 'owner-joy'}" style="width:20px;height:20px;font-size:0.55rem;display:inline-flex">${(j.Owner || '?')[0]}</span>
-                <span style="color:${timelineColor(j['Due Date'])}">${timelineLabel(j['Due Date']) || '—'}</span>
-              </div>
-            </div>
-          `).join('')}
-          ${cards.length === 0 ? '<div style="text-align:center;color:var(--text-dark);padding:24px;font-size:0.8rem">Drop cards here</div>' : ''}
-        </div>
-      </div>`;
-  }).join('');
+  // keep the client filter select in sync with the client list
+  const sel = document.getElementById('boardClient');
+  if (sel) {
+    const names = [...new Set(STORE.jobs.map(j => j.Client).filter(Boolean))].sort();
+    sel.innerHTML = '<option value="">Client: All</option>' +
+      names.map(n => `<option${n === sel.value ? ' selected' : ''}>${escHtml(n)}</option>`).join('');
+  }
+
+  const jobs = STORE.jobs.filter(boardJobFilter);
+  const groups = BOARD_VIEW.lane === 'client'
+    ? Object.entries(jobs.reduce((acc, j) => { const k = j.Client || '—'; (acc[k] = acc[k] || []).push(j); return acc; }, {}))
+    : [['All Clients', jobs]];
+
+  board.innerHTML = groups.map(([name, list]) => `
+    <div class="board-lane">
+      <div class="swimlane-header">
+        <span class="lane-name">${escHtml(name)}</span>
+        <span class="lane-meta">${list.length} job${list.length === 1 ? '' : 's'}</span>
+      </div>
+      <div class="pipeline-board">
+        ${PIPELINE_STAGES.map(stage => boardColumnHtml(stage, list, name)).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function boardColumnHtml(stage, jobs, laneClient) {
+  const cards = jobs.filter(j => j.Status === stage);
+  const pre = (BOARD_VIEW.lane === 'client' && laneClient !== '—') ? `'${escJs(laneClient)}', ` : '';
+  return `
+    <div class="pipeline-col">
+      <div class="col-header">
+        <span class="col-dot" style="background:${PIPELINE_COLORS[stage]}"></span>
+        <span class="col-title">${stage}</span>
+        <span class="col-count">${cards.length}</span>
+        <button class="col-add" title="Add job to ${escAttr(stage)}" onclick="openNewJob(${pre}'${stage}')">+</button>
+      </div>
+      <div class="pipeline-cards"
+           ondragover="event.preventDefault();this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="handlePipelineDrop(event, '${stage}');this.classList.remove('drag-over')">
+        ${cards.map(jobCardHtml).join('')}
+        ${cards.length === 0 ? '<div class="col-empty">Empty</div>' : ''}
+      </div>
+    </div>`;
+}
+
+function jobCardHtml(j) {
+  const num = j['Job #'];
+  const ownerCls = j.Owner === 'Joy' ? 'joy' : 'jon';
+  const open = BOARD_VIEW.menu === num ? ' open' : '';
+  return `
+    <div class="pipeline-card${open}" draggable="true"
+         ondragstart="event.dataTransfer.setData('text/plain','${num}')"
+         onclick="boardCardClick('${num}')">
+      <div class="pc-num">#${escHtml(num)}</div>
+      <div class="pc-title">${escHtml(j.Project || 'Untitled')}</div>
+      <div class="pc-client">${escHtml(j.Client || '—')}</div>
+      <div class="pc-footer">
+        <span class="owner-avatar ${ownerCls}" title="${escAttr(j.Owner || '')}">${escHtml((j.Owner || '?')[0])}</span>
+        <span class="due-chip" style="color:${timelineColor(j['Due Date'])}">${escHtml(timelineLabel(j['Due Date']) || '—')}</span>
+        <span class="health-dot ${boardHealthClass(j.Health)}" title="${escAttr(j.Health || '')}"></span>
+      </div>
+      <button class="pc-move" title="Move job" onclick="event.stopPropagation();toggleMoveMenu('${num}')">⇄</button>
+      <div class="move-popover">
+        ${PIPELINE_STAGES.map(s => s === j.Status
+          ? `<button class="mp-current"><span class="mp-dot" style="background:${PIPELINE_COLORS[s]}"></span>${s}</button>`
+          : `<button onclick="event.stopPropagation();moveJobTo('${num}','${s}')"><span class="mp-dot" style="background:${PIPELINE_COLORS[s]}"></span>${s}</button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function boardCardClick(num) {
+  BOARD_VIEW.menu = null;
+  renderPipeline();
+  openProjectDetail(num);
+}
+
+function toggleMoveMenu(num) {
+  BOARD_VIEW.menu = BOARD_VIEW.menu === num ? null : num;
+  renderPipeline();
+}
+
+function moveJobTo(jobNum, newStatus) {
+  const job = STORE.jobs.find(j => j['Job #'] === jobNum);
+  BOARD_VIEW.menu = null;
+  if (job && job.Status !== newStatus) {
+    queueAction('updateJob', { 'Job #': jobNum, field: 'Status', value: newStatus });
+    job.Status = newStatus;
+    renderAll();
+  } else {
+    renderPipeline();
+  }
+}
+
+function setBoardFilter(key, val) {
+  BOARD_VIEW[key] = val;
+  BOARD_VIEW.menu = null;
+  renderPipeline();
+}
+
+function toggleLanes() {
+  BOARD_VIEW.lane = BOARD_VIEW.lane === 'client' ? 'all' : 'client';
+  BOARD_VIEW.menu = null;
+  const btn = document.getElementById('laneToggle');
+  if (btn) {
+    btn.classList.toggle('on', BOARD_VIEW.lane === 'client');
+    btn.textContent = BOARD_VIEW.lane === 'client' ? 'View: Swimlanes' : 'View: All Clients';
+  }
+  renderPipeline();
 }
 
 function handlePipelineDrop(event, newStatus) {
@@ -2937,10 +3033,12 @@ function submitLogTime() {
 }
 
 // New Job
-function openNewJob() {
+function openNewJob(client, status) {
   closeModal('quickActionModal');
   document.getElementById('njStartDate').value = today();
   populateClientSelect('njClient');
+  if (client) document.getElementById('njClient').value = client;
+  if (status) document.getElementById('njStatus').value = status;
   openModal('newJobModal');
 }
 
@@ -3161,6 +3259,14 @@ document.getElementById('tabNav').addEventListener('click', e => {
 
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
+});
+
+// Close any open move popover when clicking outside the board cards
+document.addEventListener('click', e => {
+  if (BOARD_VIEW.menu && !e.target.closest('.pipeline-card')) {
+    BOARD_VIEW.menu = null;
+    renderPipeline();
+  }
 });
 
 // ============================================
